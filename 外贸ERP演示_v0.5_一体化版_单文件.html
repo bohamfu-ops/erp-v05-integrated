@@ -1,0 +1,1422 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}</style>
+<title>光数外贸 ERP 一体化版</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* 布局：左侧导航 + 右侧内容；顶栏为磨砂玻璃，抽屉与弹层为玻璃浮层；浅色＝素白，深色＝墨石 */
+:root{
+  --bg:#F5F5F7; --side:#FBFBFD; --card:#FFFFFF; --card2:#FAFAFC; --line:#E5E5EA; --line2:#F0F0F3;
+  --ink:#1D1D1F; --ink2:#3A3A3C; --muted:#6E6E73; --faint:#8E8E93;
+  --accent:#0071E3; --accent-ink:#0060DF; --accent-soft:#E8F1FD; --on-accent:#FFFFFF;
+  --ok:#248A3D; --ok-soft:#E9F7EE; --warn:#A65400; --warn-soft:#FFF4E5; --bad:#C7251B; --bad-soft:#FDECEC;
+  --yz:#4B49C9; --yz-soft:#EEEDFC; --mute-soft:#F0F0F3;
+  --glass:rgba(245,245,247,.74); --glass2:rgba(255,255,255,.82); --scrim:rgba(0,0,0,.18);
+  --shadow:0 18px 40px -16px rgba(0,0,0,.22); --shadow-s:0 1px 2px rgba(0,0,0,.06);
+  --hover:#F5F8FF; --seg:#E8E8ED; --seg-on:#FFFFFF; --nav-on:#E8E8ED; --nav-hover:#F0F0F3; --input:#FFFFFF;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+  --font-d:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  color-scheme:light;
+}
+:root[data-skin="dark"]{
+  --bg:#141416; --side:#1B1B1E; --card:#1C1C1F; --card2:#202023; --line:#2C2C30; --line2:#242427;
+  --ink:#F2F2F4; --ink2:#D1D1D6; --muted:#98989D; --faint:#76767B;
+  --accent:#3D6FD1; --accent-ink:#8EB4F2; --accent-soft:#1F2A3C; --on-accent:#FFFFFF;
+  --ok:#80C997; --ok-soft:#1C3024; --warn:#DDB16B; --warn-soft:#352B1C; --bad:#EE8C82; --bad-soft:#3A1F1E;
+  --yz:#B3B0F7; --yz-soft:#27263D; --mute-soft:#2A2A2D;
+  --glass:rgba(20,20,22,.78); --glass2:rgba(34,34,37,.86); --scrim:rgba(0,0,0,.45);
+  --shadow:0 18px 40px -16px rgba(0,0,0,.75); --shadow-s:0 1px 2px rgba(0,0,0,.4);
+  --hover:#222428; --seg:#2A2A2D; --seg-on:#3A3A3E; --nav-on:#2C2C30; --nav-hover:#232326; --input:#232326;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:13.5px;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:2px;border-radius:6px}
+
+/* ---------- 框架 ---------- */
+.app{min-height:100%}
+.side{position:fixed;left:0;top:0;bottom:0;width:236px;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:16px 10px 12px;overflow-y:auto;z-index:20;transition:background .3s}
+.brand{display:flex;align-items:center;gap:10px;padding:2px 10px 16px}
+.brand .mk{width:30px;height:30px;border-radius:9px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:14px;font-family:var(--font-d)}
+.brand b{display:block;font-family:var(--font-d);font-size:15px;letter-spacing:-.01em}
+.brand small{display:block;color:var(--faint);font-size:11px}
+.grp{font-size:11px;font-weight:600;color:var(--faint);padding:14px 10px 4px;letter-spacing:.06em}
+.nav{display:flex;align-items:center;gap:10px;width:100%;padding:7px 10px;border:0;background:none;border-radius:8px;text-align:left;cursor:pointer;color:var(--ink);transition:background .15s}
+.nav:hover{background:var(--nav-hover)}
+.nav[aria-current="page"]{background:var(--nav-on);font-weight:600}
+.nav[aria-current="page"] .i{stroke:var(--accent-ink)}
+.nav .ct{margin-left:auto;font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums}
+.nav .ct.hot{background:var(--bad);color:#fff;border-radius:999px;padding:0 6px;font-weight:600}
+.side .foot{margin-top:auto;padding:14px 10px 0;font-size:11px;color:var(--faint);line-height:1.6;border-top:1px solid var(--line);margin-inline:6px}
+.i{width:16px;height:16px;flex:none;stroke:var(--muted);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.mainwrap{min-width:0;display:flex;flex-direction:column;margin-left:236px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:15;display:flex;align-items:center;gap:12px;padding:12px max(24px,env(safe-area-inset-right,0px)) 12px 24px;background:var(--glass);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--line);transition:background .3s}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--glass)}
+.crumb{display:flex;gap:6px;align-items:center;color:var(--faint);font-size:12.5px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crumb b{color:var(--ink);font-weight:600}
+.menu{display:none}
+.search{position:relative;margin-left:auto;width:min(320px,40vw)}
+.search input{width:100%;padding:7px 12px 7px 32px;border-radius:9px;border:1px solid transparent;background:var(--seg);outline:none;transition:border .15s,background .15s}
+.search input:focus{background:var(--input);border-color:var(--accent)}
+.search .i{position:absolute;left:10px;top:50%;transform:translateY(-50%)}
+.results{position:absolute;right:0;left:0;top:calc(100% + 6px);background:var(--glass2);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:6px;display:grid;gap:2px;max-height:360px;overflow:auto}
+.results button{display:flex;gap:10px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:8px 10px;border-radius:8px;cursor:pointer}
+.results button:hover,.results button:focus-visible{background:var(--hover)}
+.results small{color:var(--faint);margin-left:auto}
+.skin{display:flex;padding:2px;border-radius:9px;background:var(--seg)}
+.skin button{border:0;background:none;padding:5px 9px;border-radius:7px;display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);cursor:pointer;transition:background .2s,color .2s}
+.skin button[aria-pressed="true"]{background:var(--seg-on);color:var(--ink);font-weight:600;box-shadow:var(--shadow-s)}
+.who{width:30px;height:30px;border-radius:50%;background:var(--accent-soft);color:var(--accent-ink);display:grid;place-items:center;font-weight:600;font-size:12px;flex:none}
+.main{padding:24px max(24px,env(safe-area-inset-right,0px)) 56px 24px;max-width:1360px;width:100%}
+.view{animation:rise .38s cubic-bezier(.2,.8,.2,1)}
+@keyframes rise{from{opacity:.35;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- 页面元素 ---------- */
+.ph{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px 20px;margin-bottom:20px}
+.ph h1{margin:0;font-family:var(--font-d);font-size:30px;font-weight:700;letter-spacing:-.025em;text-wrap:balance}
+.ph p{margin:4px 0 0;color:var(--muted);max-width:70ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0;transition:background .3s,border-color .3s}
+.card h3{margin:0 0 12px;font-family:var(--font-d);font-size:15px;font-weight:650;display:flex;flex-wrap:wrap;align-items:baseline;gap:8px}
+.card h3 small{font-weight:400;color:var(--faint);font-size:12px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g32{grid-template-columns:minmax(0,3fr) minmax(0,2fr)}.g23{grid-template-columns:minmax(0,2fr) minmax(0,3fr)}.g21{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
+.mt{margin-top:14px}
+.kpi{display:grid;gap:4px;transition:transform .25s,box-shadow .25s}
+.kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.kpi .k{font-size:12px;color:var(--muted)}
+.kpi .v{font-family:var(--font-d);font-size:24px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.kpi .d{font-size:11.5px;color:var(--faint)}
+.kpi .row{display:flex;justify-content:space-between;align-items:flex-end;gap:8px}
+.up{color:var(--ok)}.dn{color:var(--bad)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.card .tbl{border-radius:10px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th{font-size:11.5px;font-weight:600;color:var(--muted);text-align:left;padding:9px 12px;background:var(--card2);border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--line2);white-space:nowrap;vertical-align:middle}
+tr:last-child td{border-bottom:0}
+th.n,td.n{text-align:right}
+tr.click{cursor:pointer}
+tr.click:hover td{background:var(--hover)}
+tr.sel td{background:var(--accent-soft)}
+td.wrap,.wrap{white-space:normal}
+.m{font-family:var(--mono);font-size:12px;letter-spacing:-.01em}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.p-run{background:var(--accent-soft);color:var(--accent-ink)}.p-ok{background:var(--ok-soft);color:var(--ok)}.p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-bad{background:var(--bad-soft);color:var(--bad)}.p-mute{background:var(--mute-soft);color:var(--muted)}.p-yz{background:var(--yz-soft);color:var(--yz)}
+.tag{font-size:10.5px;font-weight:600;padding:1px 7px;border-radius:5px;white-space:nowrap}
+.tag.yz{background:var(--yz-soft);color:var(--yz)}.tag.own{background:var(--mute-soft);color:var(--muted)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:9px;border:1px solid var(--line);background:var(--card);font-weight:600;font-size:12.5px;cursor:pointer;white-space:nowrap;transition:transform .15s,background .15s,border-color .15s}
+.btn:hover{background:var(--hover)}
+.btn:active{transform:scale(.98)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.pri:hover{filter:brightness(1.07);background:var(--accent)}
+.btn.dng{color:var(--bad)}
+.btn.sm{padding:4px 10px;font-size:12px;border-radius:7px}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+.btn .i{width:14px;height:14px}
+.btn.pri .i{stroke:var(--on-accent)}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.filters{display:inline-flex;flex-wrap:wrap;padding:2px;border-radius:9px;background:var(--seg);gap:2px}
+.filters button{border:0;background:none;padding:5px 12px;border-radius:7px;font-size:12.5px;color:var(--muted);cursor:pointer;transition:background .2s,color .2s}
+.filters button[aria-pressed="true"]{background:var(--seg-on);color:var(--ink);font-weight:600;box-shadow:var(--shadow-s)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:-4px -4px 16px;padding:0 4px;overflow-x:auto}
+.tabs button{border:0;background:none;padding:9px 12px;font-size:13px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);font-weight:600;border-bottom-color:var(--accent)}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px 18px}
+.kv>div{display:grid;gap:2px;min-width:0}
+.kv span{font-size:11.5px;color:var(--faint)}
+.kv.sep{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}
+.note{color:var(--muted);font-size:12.5px;margin:10px 0 0;line-height:1.65}
+.banner{display:flex;gap:10px;align-items:flex-start;padding:11px 14px;border-radius:11px;font-size:12.5px;line-height:1.6;margin-bottom:14px}
+.banner b{white-space:nowrap}
+.banner.own{background:var(--mute-soft)}.banner.yz{background:var(--yz-soft)}.banner.yz b{color:var(--yz)}
+.banner.warn{background:var(--warn-soft)}.banner.warn b{color:var(--warn)}.banner.bad{background:var(--bad-soft)}.banner.bad b{color:var(--bad)}
+.banner.ok{background:var(--ok-soft)}.banner.ok b{color:var(--ok)}
+.stepper{display:flex;gap:0;overflow-x:auto;margin:18px 0 4px;padding-bottom:4px}
+.stepper .st{flex:1 0 72px;display:grid;justify-items:center;gap:6px;font-size:11.5px;color:var(--faint);position:relative;text-align:center}
+.stepper .st::before{content:"";position:absolute;top:10px;left:-50%;right:50%;height:2px;background:var(--line)}
+.stepper .st:first-child::before{display:none}
+.stepper .st.done::before,.stepper .st.now::before{background:var(--accent)}
+.stepper .dot{width:22px;height:22px;border-radius:50%;background:var(--card);border:2px solid var(--line);display:grid;place-items:center;position:relative;z-index:1}
+.stepper .done .dot{background:var(--accent);border-color:var(--accent)}
+.stepper .done .dot .i{stroke:#fff;width:12px;height:12px;stroke-width:2.6}
+.stepper .now{color:var(--ink);font-weight:600}
+.stepper .now .dot{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.form label,.fb{display:grid;gap:5px;font-size:12px;color:var(--muted)}
+input[type=number],input[type=text],input[type=date],select,textarea{background:var(--input);border:1px solid var(--line);border-radius:8px;padding:7px 10px;color:var(--ink);font-size:13px;width:100%;min-width:0}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+textarea{resize:vertical;line-height:1.6}
+.chk{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
+.chk input{width:16px;height:16px;accent-color:var(--accent)}
+.res{display:grid;gap:0}
+.res>div{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line2)}
+.res>div:last-child{border-bottom:0}
+.res .big{font-family:var(--font-d);font-size:18px;font-weight:700}
+svg.chart text{font-size:11px;fill:var(--faint);font-family:var(--font)}
+.sp{width:88px;height:32px;flex:none}
+.back{display:inline-flex;align-items:center;gap:6px;border:0;background:none;color:var(--accent-ink);cursor:pointer;padding:0;margin-bottom:12px;font-size:13px}
+.back .i{stroke:var(--accent-ink)}
+
+/* 看板 */
+.kanban{display:grid;grid-template-columns:repeat(6,minmax(190px,1fr));gap:12px;overflow-x:auto;padding-bottom:6px}
+.col{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:10px;display:grid;gap:8px;align-content:start;min-height:200px}
+.col h4{margin:2px 4px 2px;font-size:12.5px;display:flex;justify-content:space-between;color:var(--muted)}
+.col h4 span{font-variant-numeric:tabular-nums}
+.col h4 .tag{margin-left:6px}
+.kc{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 11px;display:grid;gap:4px;transition:transform .2s,box-shadow .2s}
+.kc:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.kc.late{border-color:color-mix(in srgb,var(--bad) 50%,var(--line))}
+.kc .t{font-weight:650;font-family:var(--mono);font-size:12px}
+.kc .s{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kc .f{display:flex;justify-content:space-between;align-items:center;margin-top:4px;font-size:11.5px}
+
+/* 追溯树 */
+.trace{display:grid;gap:0}
+.tn{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;position:relative;padding:9px 0}
+.tn:not(:last-child)::after{content:"";position:absolute;left:13px;top:30px;bottom:-9px;width:2px;background:var(--line)}
+.tn .dot{width:14px;height:14px;border-radius:50%;margin-left:6px;position:relative;z-index:1;border:2px solid var(--card)}
+.tn .d{background:var(--ok)}.tn .a{background:var(--accent);animation:breathe 2.8s ease-in-out infinite}.tn .w{background:var(--line)}
+.tn .lbl b{display:block;font-size:13px}
+.tn .lbl span{font-size:12px;color:var(--muted)}
+.tn.sub{padding-left:22px}
+.tn.sub::after{left:35px}
+@keyframes breathe{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* 抽屉 */
+.layer{position:fixed;inset:0;z-index:40;background:var(--scrim);animation:fade .2s}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);z-index:41;background:var(--glass2);backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);border-left:1px solid var(--line);box-shadow:var(--shadow);overflow-y:auto;padding:calc(20px + env(safe-area-inset-top,0px)) max(22px,env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) 22px;animation:slide .32s cubic-bezier(.2,.8,.2,1)}
+.drawer h2{margin:0;font-family:var(--font-d);font-size:21px;letter-spacing:-.015em}
+.drawer h3{font-family:var(--font-d);font-size:14px;margin:22px 0 10px}
+.dh{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:16px}
+.x{border:0;background:var(--seg);width:30px;height:30px;border-radius:50%;display:grid;place-items:center;cursor:pointer;flex:none}
+@keyframes slide{from{transform:translateX(40px);opacity:.3}to{transform:none;opacity:1}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.mini>div{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 12px;display:grid;gap:2px}
+.mini span{font-size:11px;color:var(--faint)}
+.mini b{font-family:var(--font-d);font-size:16px;font-variant-numeric:tabular-nums}
+.timeline{display:grid;gap:10px}
+.timeline>div{display:grid;grid-template-columns:44px 10px minmax(0,1fr);gap:10px;align-items:start;font-size:12.5px}
+.timeline .t{color:var(--faint);font-variant-numeric:tabular-nums}
+.timeline .d{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:6px}
+.chat{display:grid;gap:8px;background:var(--card2);border-radius:12px;padding:12px;border:1px solid var(--line)}
+.bubble{max-width:82%;padding:8px 11px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-size:12.5px}
+.bubble.me{justify-self:end;background:var(--accent);border-color:var(--accent);color:#fff}
+.bubble small{display:block;font-size:10.5px;opacity:.7;margin-bottom:2px}
+
+/* 需求确认 */
+.req-sum{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0 12px}
+.req-sum div{background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:10px;text-align:center}
+.req-sum b{display:block;font-family:var(--font-d);font-size:22px}
+.req-sum span{font-size:12px;color:var(--muted)}
+.req-prog{height:6px;background:var(--seg);border-radius:99px;overflow:hidden}
+.req-prog i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s}
+.req-group{margin-top:28px}
+.req-group h2{font-family:var(--font-d);font-size:19px;margin:0 0 12px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.req-group h2 small{font-size:12.5px;font-weight:400;color:var(--faint)}
+.req-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px}
+.req{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px;display:grid;gap:10px;align-content:start;transition:border-color .2s}
+.req[data-c="yes"]{border-color:color-mix(in srgb,var(--ok) 55%,var(--line))}
+.req[data-c="no"]{opacity:.7}
+.req .hd{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.req .hd b{font-size:14px}
+.rec{font-size:10.5px;font-weight:600;padding:1px 7px;border-radius:5px;white-space:nowrap}
+.rec.rm{background:var(--bad-soft);color:var(--bad)}.rec.r1{background:var(--accent-soft);color:var(--accent-ink)}.rec.r2{background:var(--yz-soft);color:var(--yz)}.rec.ro{background:var(--mute-soft);color:var(--muted)}
+.rec.new{background:var(--ok-soft);color:var(--ok)}
+.scn{display:grid;grid-template-columns:36px minmax(0,1fr);gap:4px 8px;margin:0;font-size:12.5px}
+.scn dt{color:var(--faint)}.scn dd{margin:0}
+.why{font-size:12px;color:var(--muted);background:var(--card2);border-radius:8px;padding:7px 10px}
+.choose{display:flex;flex-wrap:wrap;gap:6px}
+.choose button{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:4px 11px;font-size:12px;cursor:pointer}
+.choose button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.choose .go{margin-left:auto;border:0;color:var(--accent-ink);background:none;display:inline-flex;align-items:center;gap:4px}
+.choose .go .i{stroke:var(--accent-ink);width:13px;height:13px}
+.export textarea{font-family:var(--mono);font-size:12px;min-height:180px}
+
+/* 映射 */
+.map{display:grid;grid-template-columns:minmax(0,1fr) 30px minmax(0,1.4fr);gap:8px;align-items:center}
+.map .old{font-family:var(--mono);font-size:12px;background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.map .arr{text-align:center;color:var(--faint)}
+.lvl{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.lvl .chip{border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:12px;background:var(--card)}
+.lvl .chip.on{background:var(--accent-soft);color:var(--accent-ink);border-color:transparent;font-weight:600}
+.lvl .sep{color:var(--faint)}
+.phone{border:1px solid var(--line);border-radius:26px;padding:14px;background:var(--card2);max-width:300px;margin:0 auto}
+.pc{background:var(--card);border-radius:14px;padding:12px;font-size:12.5px;border:1px solid var(--line)}
+.pc h5{margin:0 0 6px;font-size:13px}
+.aging{display:flex;height:12px;border-radius:99px;overflow:hidden;background:var(--seg)}
+.aging i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted);margin-top:10px}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;background:var(--glass2);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:12px;padding:10px 16px;font-size:13px;font-weight:500;animation:pop .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+
+@media (max-width:1100px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g32,.g23,.g21,.g3{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:900px){
+  .mainwrap{margin-left:0}
+  .side{width:260px;transform:translateX(-102%);transition:transform .3s;box-shadow:var(--shadow);padding-top:calc(16px + env(safe-area-inset-top,0px));padding-left:max(10px,env(safe-area-inset-left,0px))}
+  .side.open{transform:none}
+  .menu{display:grid;place-items:center;width:32px;height:32px;border-radius:8px;border:0;background:var(--seg);cursor:pointer;flex:none}
+  .top{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .g2,.g4{grid-template-columns:minmax(0,1fr)}
+  .form{grid-template-columns:minmax(0,1fr)}
+  .skin span{display:none}
+  .search{width:auto;flex:1}
+  .ph h1{font-size:25px}
+  .mini{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<script>
+/* 在第一次绘制前决定浅色或深色，避免闪烁 */
+(function () {
+  var s = null, r = document.documentElement, t = r.getAttribute('data-theme');
+  try { s = localStorage.getItem('erp5-skin'); } catch (e) {}
+  r.setAttribute('data-skin', s || (t === 'dark' || t === 'light' ? t : (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')));
+})();
+</script>
+
+<div class="app">
+  <aside class="side" id="side" aria-label="主导航"></aside>
+  <div class="mainwrap">
+    <header class="top" id="top"></header>
+    <main class="main" id="main"></main>
+  </div>
+</div>
+<div id="layer"></div>
+<div class="toast" id="toast" role="status" hidden></div>
+<script>
+/* ================= 基础工具 ================= */
+const $ = id => document.getElementById(id);
+const fmt = (n, d = 0) => Number(n).toLocaleString('zh-CN', { minimumFractionDigits: d, maximumFractionDigits: d });
+const esc = t => String(t).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+const TODAY = new Date(2026, 10, 18);
+const md = s => { const [m, d] = s.split('-').map(Number); return new Date(2026, m - 1, d); };
+const daysPast = s => Math.round((TODAY - md(s)) / 864e5);
+const S = {
+  view: 'dash', arg: null, tab: 'lines', drawer: null, choice: {}, note: {},
+  custF: '全部', scF: '全部', recSel: 'SK-1188', shipSel: 'SH-2611-03', sampleF: '全部', arTab: 'claim', arF: '全部', apTab: 'inv', stockTab: 'stock', moveF: '全部', glTab: 'vou', costTab: 'pi', mapF: '全部', perfRule: 'gp', perfCash: true,
+  q: { cust: 'C-304', prod: 'C91QS100LR4-A2', cost: 680, rebate: 13, fx: 7.1432, freight: 0.9, qty: 300, comm: 2, margin: 12, extra: 4 }
+};
+try { const c = JSON.parse(localStorage.getItem('erp5a-req') || '{}'); if (c && typeof c === 'object') S.choice = c; } catch (_) {}
+try { const n = JSON.parse(localStorage.getItem('erp5a-note') || '{}'); if (n && typeof n === 'object') S.note = n; } catch (_) {}
+
+/* ================= 示例数据（全部为虚构） ================= */
+function seed() {
+  return {
+    customers: [
+      { id: 'C-301', name: 'Kepler Telecom GmbH', short: 'Kepler', country: '德国', cc: 'DE', cur: 'USD', level: 'A', sales: '林晓', pool: '私海', last: '2 天前', type: '外销', contact: 'Jonas Weber（采购经理）', ch: '邮件', credit: 150000, terms: '30% 订金，出货前付清',
+        follow: [['11-16', '邮件', '确认追加 300 只 10G LR，交期改 11-28'], ['11-03', '视频会议', 'PI 确认，订金三天内付'], ['10-21', '邮件', '100G LR4 样品测试通过']],
+        chat: [['客户', '11-16 15:02', 'Can you add 300 pcs of 10G LR to the current PI?'], ['我', '11-16 15:20', 'Yes. Updated PI will be sent today, lead time 11/28.']] },
+      { id: 'C-302', name: 'Altamira Networks S.A. de C.V.', short: 'Altamira', country: '墨西哥', cc: 'MX', cur: 'USD', level: 'A', sales: '陈一凡', pool: '私海', last: '昨天', type: '外销', contact: 'Lucía Romero（技术采购）', ch: 'WhatsApp', credit: 120000, terms: '30% 订金，见提单副本付清',
+        follow: [['11-17', 'WhatsApp', '客户要求改中性包装＋英文说明书'], ['11-09', '快递', '寄出 100G LR4 样品 4 只']],
+        chat: [['客户', '11-17 09:41', 'Please ship with neutral packing and English manual.'], ['我', '11-17 09:55', 'Noted, change order submitted. No extra cost.']] },
+      { id: 'C-303', name: 'Saigon FiberLink JSC', short: 'Saigon FL', country: '越南', cc: 'VN', cur: 'USD', level: 'B', sales: '林晓', pool: '私海', last: '6 天前', type: '外销', contact: 'Nguyen Thu Ha（采购）', ch: 'Zalo', credit: 60000, terms: '全款发货',
+        follow: [['11-12', 'Zalo', '已签收，询问下一批 CWDM 价格']], chat: [['客户', '11-12 10:05', 'Goods received. Price for next 6,000 pcs?']] },
+      { id: 'C-304', name: 'Bangkok NetOps Co., Ltd.', short: 'BKK NetOps', country: '泰国', cc: 'TH', cur: 'USD', level: 'B', sales: '周可', pool: '私海', last: '今天', type: '外销', contact: 'Somchai P.（老板）', ch: 'LINE', credit: 50000, terms: '30% 订金，到货后 20 天付清',
+        follow: [['11-18', 'LINE', '催收尾款，客户说月底前付'], ['11-08', 'LINE', '反映 12 只 10G LR 的 DDM 读数异常']],
+        chat: [['我', '11-18 10:12', 'Kindly arrange the balance USD 26,320, it is 12 days overdue.'], ['客户', '11-18 10:40', 'Will pay before month end.']] },
+      { id: 'C-305', name: 'Manila Opticom Inc.', short: 'Manila Opticom', country: '菲律宾', cc: 'PH', cur: 'USD', level: 'C', sales: '陈一凡', pool: '私海', last: '4 天前', type: '外销', contact: 'Paolo Reyes（采购）', ch: 'WhatsApp', credit: 30000, terms: '30% 订金，出货前付清',
+        follow: [['11-14', 'WhatsApp', '订金由香港贸易公司代付']], chat: [['客户', '11-14 18:20', 'Deposit paid by our HK partner, Optimax Trading.']] },
+      { id: 'C-306', name: 'PT Jakarta LinkWorks', short: 'Jakarta LW', country: '印尼', cc: 'ID', cur: 'USD', level: 'C', sales: '—', pool: '公海', last: '35 天前', type: '外销', contact: 'Budi S.', ch: 'WhatsApp', credit: 20000, terms: '—',
+        follow: [['10-14', 'WhatsApp', '询价 10G LR 800 只，提到需要 SDPPI 认证']], chat: [['客户', '10-14 11:02', 'Do you have SDPPI certificate?']] },
+      { id: 'C-307', name: '深圳云帆网络科技有限公司', short: '云帆网络', country: '中国', cc: 'CN', cur: 'CNY', level: 'B', sales: '周可', pool: '私海', last: '今天', type: '内销', contact: '刘工（采购）', ch: '微信', credit: 500000, terms: '货到 30 天',
+        follow: [['11-18', '微信', '确认 11-30 送货']], chat: [['客户', '11-18 08:50', '25G 那批 11 月底能到吗？'], ['我', '11-18 09:02', '要等 VCSEL 到料，最晚 12 月 3 日。']] }
+    ],
+    suppliers: [
+      { id: 'S-01', name: '光芯电子', cat: '激光器、VCSEL', terms: '月结 30 天', ontime: 92, qual: 98.6, open: 44200 },
+      { id: 'S-02', name: '华晶光电', cat: 'TOSA、ROSA 器件', terms: '月结 60 天', ontime: 88, qual: 99.1, open: 60800 },
+      { id: 'S-03', name: '精密五金', cat: '外壳、拉环、散热片', terms: '月结 30 天', ontime: 97, qual: 99.6, open: 4110 },
+      { id: 'S-04', name: '外协厂甲', cat: 'PCBA 贴片（委外）', terms: '月结 30 天', ontime: 90, qual: 98.9, open: 432 },
+      { id: 'S-05', name: '立信电子', cat: '芯片、阻容', terms: '款到发货', ontime: 95, qual: 99.8, open: 0 },
+      { id: 'S-06', name: '顺达物流', cat: '国际快递、空运', terms: '月结', ontime: 96, qual: 100, open: 2860 }
+    ],
+    products: [
+      { code: 'C91QS100LR4-A2', inner: '91QS100LR4-A2', name: '100G QSFP28 LR4 10km', hs: '8517.6200', kg: 0.12, cost: 680, rebate: 13 },
+      { code: 'C91SP10LR-D1', inner: '91SP10LR-D1', name: '10G SFP+ LR 1310nm 10km', hs: '8517.6200', kg: 0.05, cost: 58, rebate: 13 },
+      { code: 'C91SP25SR-B1', inner: '91SP25SR-B1', name: '25G SFP28 SR 850nm 100m', hs: '8517.6200', kg: 0.05, cost: 72, rebate: 13 },
+      { code: 'C91SPCW55-40', inner: '91SPCW55-40', name: '1.25G SFP CWDM 1550nm 40km', hs: '8517.6200', kg: 0.05, cost: 38, rebate: 13 },
+      { code: 'C91GPON-CP', inner: '91GPON-CP', name: 'GPON OLT Class C+ SFP', hs: '8517.6200', kg: 0.05, cost: 96, rebate: 13 }
+    ],
+    mats: {
+      'TOSA-LR4': ['发射器件 TOSA LR4', 'S-02', 238], 'ROSA-LR4': ['接收器件 ROSA LR4', 'S-02', 142], 'PCBA-QS100': ['PCBA 100G LR4', 'S-04', 186], 'IC-DRV100': ['100G 驱动芯片', 'S-05', 96],
+      'SHELL-QS28': ['QSFP28 外壳', 'S-03', 12.5], 'PULL-QS28': ['QSFP28 拉环', 'S-03', 1.2], 'HS-QS28': ['散热片', 'S-03', 3.4],
+      'TOSA-10LR': ['发射器件 TOSA 10G LR', 'S-02', 21], 'ROSA-10LR': ['接收器件 ROSA 10G', 'S-02', 14], 'SHELL-SFP': ['SFP 外壳', 'S-03', 2.2], 'VCSEL-25G': ['VCSEL 25G 激光器', 'S-01', 26]
+    },
+    boms: {
+      'C91QS100LR4-A2': [['PCBA-QS100', 1, '委外贴片'], ['TOSA-LR4', 1, '采购'], ['ROSA-LR4', 1, '采购'], ['SHELL-QS28', 1, '采购'], ['PULL-QS28', 1, '采购'], ['HS-QS28', 2, '采购']],
+      'C91SP10LR-D1': [['TOSA-10LR', 1, '采购'], ['ROSA-10LR', 1, '采购'], ['SHELL-SFP', 1, '采购']],
+      'C91SP25SR-B1': [['VCSEL-25G', 1, '采购'], ['SHELL-SFP', 1, '采购']]
+    },
+    bomHist: [['V3', '11-02', 'HS-QS28 散热片由 1 片改 2 片', '工程 · 何工'], ['V2', '08-15', 'TOSA 改用华晶光电', '工程 · 何工']],
+    quotes: [
+      { id: 'BJ2026111702', ver: 1, cust: 'C-304', prod: 'C91QS100LR4-A2', qty: 300, price: 121.0, margin: 9.4, status: '待审批', att: 2, sales: '周可' },
+      { id: 'BJ2026111401', ver: 1, cust: 'C-306', prod: 'C91SP10LR-D1', qty: 800, price: 10.4, margin: 18.1, status: '已发客户', att: 1, sales: '林晓' },
+      { id: 'BJ2026110301', ver: 3, cust: 'C-301', prod: 'C91QS100LR4-A2', qty: 200, price: 128.0, margin: 15.8, status: '已转合同', pi: 'PI20261103KEP', att: 3, sales: '林晓' },
+      { id: 'BJ2026102501', ver: 2, cust: 'C-302', prod: 'C91SP25SR-B1', qty: 3000, price: 14.6, margin: 16.4, status: '已转合同', pi: 'PI20261028ALT', att: 2, sales: '陈一凡' }
+    ],
+    quoteVers: [['V1', '10-21', 'USD 136.00', '首次报价'], ['V2', '10-28', 'USD 131.00', '客户要求 200 只以上降价'], ['V3', '11-02', 'USD 128.00', '加订 10G LR 1,500 只打包价']],
+    contracts: [
+      { pi: 'PI20261103KEP', cust: 'C-301', type: '外销', term: 'FOB 深圳', cur: 'USD', sales: '林晓', lines: [['C91QS100LR4-A2', 200, 128.0], ['C91SP10LR-D1', 1500, 9.8]], node: 3, ver: 2,
+        pay: [['订金 30%', 12090, '11-06', '已收'], ['出货前 70%', 28210, '11-28', '未收']], wo: ['WO2026111601', 'WO2026111602'], po: ['PO2026111001'], ship: '', inv: '', est: 61200, act: null, co: '—', late: 0, use: '量产' },
+      { pi: 'PI20261028ALT', cust: 'C-302', type: '外销', term: 'CIP 墨西哥城', cur: 'USD', sales: '陈一凡', lines: [['C91SP25SR-B1', 3000, 14.6]], node: 5, ver: 1,
+        pay: [['订金 30%', 13140, '10-30', '已收'], ['见提单副本 70%', 30660, '12-05', '到账待认领']], wo: ['WO2026110201'], po: [], ship: 'SH-2611-03', inv: '', est: 52300, act: null, co: '—', late: 0, use: '量产' },
+      { pi: 'PI20261021SGF', cust: 'C-303', type: '外销', term: 'CPT 胡志明', cur: 'USD', sales: '林晓', lines: [['C91SPCW55-40', 4000, 6.2]], node: 10, ver: 1,
+        pay: [['全款', 24800, '11-10', '已收']], wo: ['WO2026102401'], po: [], ship: 'SH-2611-01', inv: 'INV2026110501', est: 27900, act: 27120, co: 'Form E', late: 0, use: '量产' },
+      { pi: 'PI20261015BKN', cust: 'C-304', type: '外销', term: 'FOB 深圳', cur: 'USD', sales: '周可', lines: [['C91SP10LR-D1', 3000, 9.5], ['C91GPON-CP', 500, 18.2]], node: 9, ver: 1,
+        pay: [['订金 30%', 11280, '10-17', '已收'], ['尾款 70%', 26320, '11-06', '逾期']], wo: ['WO2026101801'], po: [], ship: 'SH-2610-07', inv: 'INV2026102702', est: 46800, act: null, co: 'RCEP', late: 12, use: '量产' },
+      { pi: 'PI20261009MNO', cust: 'C-305', type: '外销', term: 'CPT 马尼拉', cur: 'USD', sales: '陈一凡', lines: [['C91GPON-CP', 1200, 17.6]], node: 1, ver: 1,
+        pay: [['订金 30%', 6336, '11-14', '到账待认领'], ['出货前 70%', 14784, '12-10', '未收']], wo: [], po: [], ship: '', inv: '', est: 21400, act: null, co: 'Form E', late: 0, use: '量产', block: '信用额度待审批，暂不排产' },
+      { pi: 'HT20261108YF', cust: 'C-307', type: '内销', term: '送货上门', cur: 'CNY', sales: '周可', lines: [['C91SP25SR-B1', 2000, 98.0]], node: 2, ver: 1,
+        pay: [['货到 30 天', 196000, '12-30', '未收']], wo: ['WO2026111301'], po: ['PO2026111302'], ship: '', inv: '', est: 33600, act: null, co: '—', late: 0, use: '量产' }
+    ],
+    changes: [
+      { id: 'BG-0013', pi: 'PI20261028ALT', ver: '002', date: '11-17', diff: [['包装', '标准彩盒', '中性包装＋英文说明书'], ['标签', '贵司 Logo', '无 Logo']], reason: '客户要求中性包装', st: '待审批', by: '陈一凡', effect: '通知包装组改包材，生产不受影响' },
+      { id: 'BG-0012', pi: 'PI20261103KEP', ver: '002', date: '11-12', diff: [['C91SP10LR-D1 数量', '1,200', '1,500'], ['交期', '11-25', '11-28'], ['合同金额', 'USD 37,360.00', 'USD 40,300.00']], reason: '客户追加 300 只', st: '已生效', by: '林晓', effect: '工单 WO2026111602 数量自动由 1,200 改 1,500，物料需求重算' }
+    ],
+    samples: [
+      { id: 'YP-0033', cust: 'C-304', prod: 'C91QS100LR4-A2', qty: 2, out: '11-18', due: '12-18', st: '待出库', note: '客户评估 100G 方案' },
+      { id: 'YP-0031', cust: 'C-302', prod: 'C91QS100LR4-A2', qty: 4, out: '11-09', due: '12-09', st: '测试中', note: '客户实验室兼容性测试' },
+      { id: 'YP-0028', cust: 'C-301', prod: 'C91SP25SR-B1', qty: 10, out: '10-15', due: '11-15', st: '逾期未还', note: '客户说测试完会归还 6 只' },
+      { id: 'YP-0024', cust: 'C-303', prod: 'C91SPCW55-40', qty: 6, out: '09-20', due: '10-20', st: '已转订单', note: '测试通过，转为 PI20261021SGF', pi: 'PI20261021SGF' }
+    ],
+    /* 采购：物料需求由合同与工单自动计算 */
+    mrp: [
+      { item: 'VCSEL-25G', need: 2000, stock: 300, onway: 0, safe: 200, for: 'HT20261108YF', pr: 'QG2026111801' },
+      { item: 'TOSA-LR4', need: 200, stock: 36, onway: 160, safe: 20, for: 'PI20261103KEP', pr: '' },
+      { item: 'ROSA-LR4', need: 200, stock: 60, onway: 160, safe: 20, for: 'PI20261103KEP', pr: '' },
+      { item: 'TOSA-10LR', need: 1500, stock: 1100, onway: 0, safe: 300, for: 'PI20261103KEP', pr: '' },
+      { item: 'ROSA-10LR', need: 1500, stock: 1680, onway: 0, safe: 300, for: 'PI20261103KEP', pr: '' },
+      { item: 'SHELL-SFP', need: 3500, stock: 5200, onway: 0, safe: 500, for: '多张合同', pr: '' }
+    ],
+    prs: [{ id: 'QG2026111801', item: 'VCSEL-25G', qty: 1900, need: '11-24', src: 'HT20261108YF', st: '已转采购', po: 'PO2026111302', offers: [['S-01', 26.0, 7], ['S-05', 27.5, 5]] }],
+    pos: [
+      { id: 'PO2026111302', sup: 'S-01', lines: [['VCSEL-25G', 1900, 26.0]], due: '11-26', recv: 0, st: '待审批', for: 'HT20261108YF' },
+      { id: 'PO2026111001', sup: 'S-02', lines: [['TOSA-LR4', 160, 238], ['ROSA-LR4', 160, 142]], due: '11-20', recv: 160, st: '已到货待检', for: 'PI20261103KEP' },
+      { id: 'PO2026110501', sup: 'S-03', lines: [['SHELL-QS28', 300, 12.5], ['PULL-QS28', 300, 1.2]], due: '11-12', recv: 300, st: '已入库', for: '备货' }
+    ],
+    /* 仓库：收货与检验合并为一个队列 */
+    inbound: [
+      { id: 'SL2026111801', src: '采购到货', ref: 'PO2026111001', who: '华晶光电', item: 'TOSA-LR4', qty: 160, st: '待检验' },
+      { id: 'SL2026111802', src: '采购到货', ref: 'PO2026111001', who: '华晶光电', item: 'ROSA-LR4', qty: 160, st: '待检验' },
+      { id: 'WS2026111701', src: '委外回货', ref: 'WW2026111601', who: '外协厂甲', item: 'PCBA-QS100', qty: 120, st: '待检验' },
+      { id: 'WG2026111801', src: '工单完工', ref: 'WO2026111601', who: '生产组', item: 'C91QS100LR4-A2', qty: 90, st: '待检验' },
+      { id: 'SL2026111201', src: '采购到货', ref: 'PO2026110501', who: '精密五金', item: 'SHELL-QS28', qty: 300, st: '已入库' }
+    ],
+    stock: [
+      ['C91QS100LR4-A2', '成品仓', 36, 0, 512.40], ['C91SP10LR-D1', '成品仓', 820, 600, 41.20], ['C91SP25SR-B1', '成品仓', 3060, 3000, 52.80], ['C91SPCW55-40', '成品仓', 1240, 0, 27.10], ['C91GPON-CP', '成品仓', 140, 0, 70.30],
+      ['TOSA-LR4', '原材料仓', 36, 36, 238], ['ROSA-LR4', '原材料仓', 60, 60, 142], ['PCBA-QS100', '半成品仓', 0, 0, 186], ['TOSA-10LR', '原材料仓', 1100, 1100, 21], ['ROSA-10LR', '原材料仓', 1680, 1500, 14], ['SHELL-SFP', '原材料仓', 5200, 3500, 2.2], ['VCSEL-25G', '原材料仓', 300, 300, 26], ['IC-DRV100', '外协厂甲（委外仓）', 220, 220, 96]
+    ],
+    moves: [
+      ['11-18', '样品借出', 'YP-0031', 'C91QS100LR4-A2', -4, '成品仓'],
+      ['11-17', '委外回货入库', 'WS2026111501', 'PCBA-QS100', 100, '半成品仓'],
+      ['11-17', '销售出库', 'CK2026111702', 'C91SP25SR-B1', -3000, '成品仓'],
+      ['11-16', '生产领料', 'LL2026111601', 'TOSA-LR4', -164, '原材料仓'],
+      ['11-16', '委外送料', 'WL2026111601', 'IC-DRV100', -220, '原材料仓 → 委外仓'],
+      ['11-15', '完工入库', 'WG2026111501', 'C91SP25SR-B1', 3000, '成品仓'],
+      ['11-12', '采购入库', 'SL2026111201', 'SHELL-QS28', 300, '原材料仓'],
+      ['11-10', '盘点调整', 'PD2026111001', 'SHELL-SFP', -12, '原材料仓'],
+      ['11-03', '调拨', 'DB2026110301', 'ROSA-10LR', 200, '原材料仓 → 现场仓']
+    ],
+    wos: [
+      { id: 'WO2026111601', pi: 'PI20261103KEP', item: 'C91QS100LR4-A2', qty: 200, done: 90, issued: true, due: '11-22', st: '生产中' },
+      { id: 'WO2026111602', pi: 'PI20261103KEP', item: 'C91SP10LR-D1', qty: 1500, done: 0, issued: false, due: '11-25', st: '待领料' },
+      { id: 'WO2026111301', pi: 'HT20261108YF', item: 'C91SP25SR-B1', qty: 2000, done: 0, issued: false, due: '11-30', st: '欠料' },
+      { id: 'WO2026110201', pi: 'PI20261028ALT', item: 'C91SP25SR-B1', qty: 3000, done: 3000, issued: true, due: '11-15', st: '已完工' }
+    ],
+    wws: [{ id: 'WW2026111601', wo: 'WO2026111601', sup: 'S-04', item: 'PCBA-QS100', qty: 220, sent: 220, back: 100, price: 3.6, due: '11-23' }],
+    /* 财务 */
+    receipts: [
+      { id: 'SK-1188', date: '11-17', payer: 'ALTAMIRA NETWORKS S.A. DE C.V.', amt: 30660, cur: 'USD', bank: '中国银行 美元户', claimed: null },
+      { id: 'SK-1186', date: '11-14', payer: 'OPTIMAX TRADING LIMITED (HK)', amt: 6336, cur: 'USD', bank: '跨境收款平台', claimed: null },
+      { id: 'SK-1179', date: '11-06', payer: 'KEPLER TELECOM GMBH', amt: 12090, cur: 'USD', bank: '中国银行 美元户', claimed: 'PI20261103KEP · 订金 30%', rate: 7.1432 }
+    ],
+    ar: [
+      { inv: 'INV2026102702', pi: 'PI20261015BKN', cust: 'C-304', cur: 'USD', amt: 26320, got: 0, due: '11-06', log: [['11-18', 'LINE', '客户承诺月底前付']] },
+      { inv: 'INV2026091803', pi: 'PI20260912KEP', cust: 'C-301', cur: 'USD', amt: 18600, got: 0, due: '10-08', log: [['11-10', '邮件', '客户付款流程卡在内部审批']] },
+      { inv: 'INV2026080401', pi: 'PI20260728ALT', cust: 'C-302', cur: 'USD', amt: 22400, got: 12000, due: '09-03', log: [['10-30', 'WhatsApp', '已付 12,000，余款等对方银行放行']] },
+      { inv: 'INV2026061102', pi: 'PI20260605MNO', cust: 'C-305', cur: 'USD', amt: 9800, got: 0, due: '07-11', log: [['09-02', 'WhatsApp', '客户称货有质量问题，要求扣款']] },
+      { inv: 'INV2026042001', pi: 'PI20260416BKN', cust: 'C-304', cur: 'USD', amt: 7400, got: 0, due: '05-20', log: [] },
+      { inv: 'INV2026110501', pi: 'PI20261021SGF', cust: 'C-303', cur: 'USD', amt: 24800, got: 24800, due: '11-10', log: [] }
+    ],
+    ap: [
+      { id: 'JX2026111201', sup: 'S-03', ref: 'PO2026110501 · SL2026111201', amt: 4110, tax: 472.83, match: '三单一致', due: '12-12', paid: 0, st: '待付款' },
+      { id: 'JX2026111701', sup: 'S-04', ref: 'WW2026111601 · 回货 100 套', amt: 360, tax: 41.42, match: '按回货数量', due: '12-17', paid: 0, st: '待付款' },
+      { id: 'JX2026110801', sup: 'S-02', ref: 'PO2026100802 · SL2026101901', amt: 60800, tax: 6994.69, match: '单价不一致', due: '12-08', paid: 0, st: '待核对', diff: '发票单价 TOSA 240.00，采购单 238.00' },
+      { id: 'QT2026111601', sup: 'S-06', ref: '11 月空运运费（分摊到 PI20261028ALT）', amt: 2860, tax: 161.89, match: '其他应付', due: '11-30', paid: 0, st: '待付款' },
+      { id: 'JX2026102101', sup: 'S-01', ref: 'PO2026100501 · SL2026101701', amt: 44200, tax: 5084.96, match: '三单一致', due: '11-20', paid: 0, st: '本周到期' }
+    ],
+    fx: {
+      locks: [['2026-11', 7.1432, '财务 · 赵敏', '11-01 09:12'], ['2026-10', 7.1186, '财务 · 赵敏', '10-01 09:05'], ['2026-09', 7.1120, '财务 · 赵敏', '09-01 09:20']],
+      daily: [['11-11', 7.1395], ['11-12', 7.1421], ['11-13', 7.1460], ['11-14', 7.1452], ['11-17', 7.1488], ['11-18', 7.1503]],
+      hist: [['11-12', 24800, 7.1350, 'PI20261021SGF 全款'], ['10-31', 13140, 7.1290, 'PI20261028ALT 订金'], ['10-20', 11280, 7.1210, 'PI20261015BKN 订金']],
+      unsettled: 12090
+    },
+    vouchers: [
+      { no: '记-1118-004', src: '采购发票 JX2026111701', lines: [['委托加工物资', 360, 0], ['应交税费-进项税', 41.42, 0], ['应付账款-外协厂甲', 0, 401.42]], st: '待审核' },
+      { no: '记-1117-012', src: '销售出库 CK2026111702', lines: [['主营业务成本', 158400, 0], ['库存商品', 0, 158400]], st: '已过账' },
+      { no: '记-1117-011', src: '委外回货 WS2026111501', lines: [['半成品', 18600, 0], ['委托加工物资', 0, 18600]], st: '已过账' },
+      { no: '记-1112-006', src: '结汇 PI20261021SGF', lines: [['银行存款-人民币户', 176948, 0], ['财务费用-汇兑损益', 203.36, 0], ['银行存款-美元户', 0, 177151.36]], st: '已过账' },
+      { no: '记-1106-003', src: '收款 SK-1179', lines: [['银行存款-美元户', 86361.29, 0], ['预收账款-Kepler', 0, 86361.29]], st: '已过账' }
+    ],
+    rules: [['销售出库', '主营业务成本', '库存商品'], ['销售发票（外销）', '应收账款', '主营业务收入-出口收入'], ['收款认领', '银行存款-美元户', '应收账款／预收账款'], ['采购入库', '原材料', '应付暂估'], ['采购发票', '应付暂估＋进项税', '应付账款'], ['付款', '应付账款', '银行存款'], ['生产领料', '生产成本', '原材料'], ['完工入库', '库存商品', '生产成本'], ['委外送料', '委托加工物资', '原材料'], ['结汇', '银行存款-人民币户', '银行存款-美元户（差额进汇兑损益）'], ['月末调汇', '银行存款-美元户', '财务费用-汇兑损益']],
+    approvals: [
+      { id: 'AP-414', type: '采购单', ref: 'PO2026111302', who: '采购 · 吴佳', detail: '光芯电子 VCSEL 1,900 只，¥49,400', status: '待审批', step: '第 1 层 · 采购主管', go: 'po' },
+      { id: 'AP-412', type: '订单变更', ref: 'BG-0013', who: '陈一凡', detail: 'PI20261028ALT 改中性包装＋英文说明书', status: '待审批', step: '第 1 层 · 业务主管', go: 'contract|PI20261028ALT|change' },
+      { id: 'AP-411', type: '信用额度超限', ref: 'PI20261009MNO', who: '陈一凡', detail: '额度 USD 30,000，已有未收 USD 9,800，本单 USD 21,120', status: '待审批', step: '第 2 层 · 总经理', go: 'contract|PI20261009MNO' },
+      { id: 'AP-409', type: '报价毛利低于门槛', ref: 'BJ2026111702', who: '周可', detail: '毛利 9.4%，门槛 12%', status: '待审批', step: '第 1 层 · 业务主管', go: 'quote' }
+    ],
+    ships: [
+      { id: 'SH-2611-03', mode: '空运', route: '深圳 → 墨西哥城 MEX', etd: '11-24', items: [['PI20261028ALT', 'C91SP25SR-B1', 3000]], freight: 1860, ck: 'CK2026111702', docs: { 商业发票: 1, 装箱单: 1, 报关资料: 0, 空运提单: 0, 原产地声明: 0 }, st: '已出库待订舱' },
+      { id: 'SH-2611-01', mode: '快递 DHL', route: '深圳 → 胡志明 SGN', etd: '11-05', items: [['PI20261021SGF', 'C91SPCW55-40', 4000]], freight: 620, ck: 'CK2026110402', docs: { 商业发票: 1, 装箱单: 1, 报关资料: 1, 运单: 1, 'Form E 产地证': 1 }, st: '已签收' },
+      { id: 'SH-2610-07', mode: '空运', route: '深圳 → 曼谷 BKK', etd: '10-30', items: [['PI20261015BKN', 'C91SP10LR-D1', 3000], ['PI20261015BKN', 'C91GPON-CP', 500]], freight: 980, ck: 'CK2026102902', docs: { 商业发票: 1, 装箱单: 1, 报关资料: 1, 空运提单: 1, 'RCEP 原产地证书': 1 }, st: '已到港' }
+    ],
+    after: [
+      { id: 'AS-0021', pi: 'PI20261015BKN', cust: 'C-304', prod: 'C91SP10LR-D1', qty: 12, kind: '返修', reason: 'DDM 读数异常（温度偏高 8°C）', step: 2, steps: ['登记', '客户寄回', '检测', '维修或换新', '寄回客户'] },
+      { id: 'AS-0019', pi: 'PI20260728ALT', cust: 'C-302', prod: 'C91SP25SR-B1', qty: 30, kind: '退货', reason: '客户交换机兼容性问题，改订 10G', step: 4, steps: ['登记', '退货证明', '进口报关', '入库检验', '退款或换货'] }
+    ],
+    rebates: [
+      { cd: '5316 2026 1100 0412', pi: 'PI20261021SGF', inv: '进项专票 2 张', match: '一致', amt: 19940, st: '可申报' },
+      { cd: '5316 2026 1000 0388', pi: 'PI20261015BKN', inv: '进项专票 3 张', match: '规格写法不一致', amt: 31230, st: '待更正' },
+      { cd: '—', pi: 'PI20261028ALT', inv: '已到票', match: '—', amt: 0, st: '未报关' }
+    ]
+  };
+}
+let DB = seed();
+
+/* 外销 12 个节点：采购备料与生产都在本系统 */
+const NODES = {
+  外销: ['报价', 'PI 确认', '备料', '生产', '检验', '出库', '订舱', '报关', '提单', '收款', '结汇', '退税'],
+  内销: ['报价', '合同', '备料', '生产', '检验', '出库', '开票', '回款']
+};
+const custOf = id => DB.customers.find(c => c.id === id) || {};
+const supOf = id => DB.suppliers.find(s => s.id === id) || { name: id };
+const prodOf = code => DB.products.find(p => p.code === code) || { name: (DB.mats[code] || [code])[0], inner: code };
+const nameOf = code => DB.products.find(p => p.code === code) ? prodOf(code).name : (DB.mats[code] || [code])[0];
+const scOf = pi => DB.contracts.find(c => c.pi === pi);
+const total = c => c.lines.reduce((a, l) => a + l[1] * l[2], 0);
+const pendingAp = () => DB.approvals.filter(a => a.status === '待审批').length;
+const arOpen = () => DB.ar.filter(r => r.amt - r.got > 0);
+const overdueAmt = () => arOpen().filter(r => daysPast(r.due) > 0).reduce((a, r) => a + r.amt - r.got, 0);
+const curLock = () => DB.fx.locks[0];
+const shortage = m => Math.max(0, m.need + m.safe - m.stock - m.onway);
+</script>
+<script>
+/* ================= 图标 ================= */
+const IC = {
+  req: '<path d="M9 11l2 2 4-4"/><rect x="4" y="4" width="16" height="16" rx="3"/>',
+  map: '<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>',
+  dash: '<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>',
+  approvals: '<path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/>',
+  customers: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.4 3.4-5.5 6.5-5.5s5.7 2.1 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 010 7M18.5 14.8c1.6.9 2.6 2.7 3 5.2"/>',
+  quote: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M12 12h2M8 16h2M12 16h2"/>',
+  contracts: '<path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
+  follow: '<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="10" rx="1.5"/><rect x="17" y="4" width="4" height="13" rx="1.5"/>',
+  samples: '<path d="M9 3h6M10 3v6l-5 9a2 2 0 002 3h10a2 2 0 002-3l-5-9V3"/><path d="M7.5 15h9"/>',
+  ship: '<path d="M2 16l20-6-7 11-3-5z"/><path d="M12 16l3-6"/>',
+  after: '<path d="M14.5 5.5l4 4-9 9H5.5v-4z"/><path d="M12.5 7.5l4 4"/>',
+  comm: '<path d="M3 17l5-5 4 4 8-8"/><path d="M14 8h6v6"/>',
+  mrp: '<path d="M4 6h16M4 12h10M4 18h6"/><circle cx="18" cy="16" r="3"/><path d="M20.2 18.2L22 20"/>',
+  po: '<path d="M6 6h15l-2 8H8z"/><path d="M6 6L5 3H2"/><circle cx="9" cy="19" r="1.5"/><circle cx="18" cy="19" r="1.5"/>',
+  suppliers: '<path d="M3 21V9l9-6 9 6v12"/><path d="M9 21v-6h6v6"/>',
+  inbound: '<path d="M4 4h16v6H4zM6 10v10h12V10"/><path d="M9 15l2 2 4-4"/>',
+  stock: '<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>',
+  mo: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',
+  ww: '<path d="M3 12h7M14 12h7"/><path d="M7 8l-4 4 4 4M17 8l4 4-4 4"/><circle cx="12" cy="12" r="2"/>',
+  bom: '<path d="M3 21V10l5 3V10l5 3V7l8 4v10z"/><path d="M7 17h2M12 17h2M17 17h2"/>',
+  ar: '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>',
+  ap: '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 15h2M3 10h18"/><path d="M8 13l-2 2 2 2"/>',
+  fx: '<path d="M4 8h13l-3-3M20 16H7l3 3"/>',
+  rebate: '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>',
+  cost: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  gl: '<path d="M4 4h12a4 4 0 014 4v12H8a4 4 0 01-4-4z"/><path d="M8 9h8M8 13h8M8 17h5"/>',
+  apprset: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+  category: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 17.5h7M17.5 14v7"/>',
+  perm: '<rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/>',
+  country: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.5 3.5 5.5 3.5 8.5s-1 6-3.5 8.5c-2.5-2.5-3.5-5.5-3.5-8.5s1-6 3.5-8.5z"/>',
+  migrate: '<path d="M4 7h11l-3-3M20 17H9l3 3"/><rect x="2" y="9" width="5" height="6" rx="1"/><rect x="17" y="9" width="5" height="6" rx="1"/>',
+  window: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/>',
+  portal: '<rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18.5h2"/>',
+  check: '<path d="M5 12l5 5L20 7"/>', arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>', left: '<path d="M19 12H5M11 6l-6 6 6 6"/>',
+  copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2"/>',
+  reset: '<path d="M4 12a8 8 0 108-8 8 8 0 00-6.3 3"/><path d="M4 4v4h4"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  moon: '<path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/>',
+  menu: '<path d="M4 7h16M4 12h16M4 17h16"/>', search: '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>',
+  clip: '<path d="M20 11.5l-8.2 8.2a5 5 0 01-7-7L13 4.5a3.5 3.5 0 015 5l-8.2 8.2a2 2 0 01-2.8-2.8L14.5 7.4"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>'
+};
+const ic = k => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${IC[k] || ''}</svg>`;
+
+const NAV = [
+  ['确认', [['req', '需求确认'], ['map', '易助功能对照']]],
+  ['总览', [['dash', '工作台'], ['approvals', '审批中心']]],
+  ['销售', [['customers', '客户'], ['quote', '报价'], ['contracts', '合同（PI）'], ['follow', '跟单看板'], ['samples', '样品与借出'], ['ship', '出运与单证'], ['after', '售后与返修'], ['comm', '业绩与提成']]],
+  ['采购', [['mrp', '物料需求与请购'], ['po', '采购单'], ['suppliers', '供应商']]],
+  ['仓库与品质', [['inbound', '收货与检验'], ['stock', '库存']]],
+  ['生产', [['mo', '工单'], ['ww', '委外加工'], ['bom', '产品与 BOM']]],
+  ['财务', [['ar', '应收与收款'], ['ap', '应付与付款'], ['fx', '汇率与结汇'], ['rebate', '出口退税'], ['cost', '成本与利润'], ['gl', '总账与关账']]],
+  ['设置', [['apprset', '审批设置'], ['category', '业务分类'], ['perm', '权限与日志'], ['country', '国家配置'], ['migrate', '上线迁移'], ['window', '单一窗口'], ['portal', '客户门户']]]
+];
+const TITLE = Object.fromEntries(NAV.flatMap(([g, it]) => it.map(([k, n]) => [k, [g, n]])));
+TITLE.contract = ['销售', '合同明细'];
+
+/* ================= 易助功能对照：每个易助功能在本系统只有一个归属 ================= */
+// [易助模块, 易助功能, 本系统页面, 处理方式, 说明]
+const MAP = [
+  ['公用设置', '单据设置、多级审批', 'apprset', '保留', '每种单据各自设审批层级，默认两段'],
+  ['公用设置', '人员、角色、用户限定资料', 'perm', '保留', '新账号默认看不到任何客户'],
+  ['公用设置', '冻结作业', 'gl', '合并', '并入月末关账'],
+  ['公用设置', '表尾签核、打印格式、假日表', 'country', '保留', '打印模板按国家与单据设定'],
+  ['基本信息', '商品信息、商品分类、批号规则', 'bom', '合并', '产品、客户品号、BOM 放在同一页'],
+  ['基本信息', '客户信息', 'customers', '升级', '加上跟进、对话归档、公海私海'],
+  ['基本信息', '供应商信息、供应商商品价格', 'suppliers', '合并', '供应商与价格表、交货与品质评分同页'],
+  ['基本信息', '仓库信息', 'stock', '合并', '仓库在库存页维护'],
+  ['基本信息', '币种汇率、每日汇率', 'fx', '合并', '改为每月锁定一次，过期提醒'],
+  ['基本信息', '性质类型', 'category', '拆分', '拆成业务类型、用途、产品线、项目号'],
+  ['基本信息', '部门、核算项目、结算方式、开户账号', 'gl', '合并', '放在总账的基础设置'],
+  ['销售管理', '报价单、报价向导', 'quote', '升级', '结构化报价，每次改价留版本'],
+  ['销售管理', '订单合同、订单', 'contracts', '合并', '一张 PI 就是合同也是订单，不再分两张'],
+  ['销售管理', '订单变更单', 'contract', '保留', '在合同的“变更”分页，自动连动工单与物料需求'],
+  ['销售管理', '销货单', 'ship', '自动', '出运时自动产生出库与销售发票，不用另开'],
+  ['销售管理', '销退单', 'after', '合并', '退货走售后流程，入库检验后自动冲销'],
+  ['销售管理', '订金汇总、客户到款核销单', 'ar', '合并', '收款认领时直接核销'],
+  ['销售管理', '委托代销', '', '暂不纳入', '请贵司确认是否在用'],
+  ['销售管理', '费用分摊', 'cost', '合并', '运费、佣金自动分摊到每张 PI'],
+  ['销售管理', '销售报表、利润分析', 'cost', '合并', '工作台、业绩、成本与利润三处'],
+  ['采购管理', '请购单、BOM 自动请购', 'mrp', '合并', '物料需求自动算缺料，一键产生请购'],
+  ['采购管理', '询价单、核价单、采购底稿', 'mrp', '合并', '在请购单上直接比价选定'],
+  ['采购管理', '采购单、采购变更单', 'po', '保留', ''],
+  ['采购管理', '进货单、收料单', 'inbound', '合并', '到货、检验、入库一个队列'],
+  ['采购管理', '退货单、验退退回', 'inbound', '合并', '检验不合格时直接验退'],
+  ['采购管理', '价差异常表', 'ap', '自动', '采购发票单价与采购单不同时自动标示'],
+  ['存货管理', '调拨、调整、其他出入库', 'stock', '保留', '在库存页的出入库记录'],
+  ['存货管理', '借出、借出还入', 'samples', '合并', '样品借出就是库存借出，只录一次'],
+  ['存货管理', '盘点、商品组合与拆解', 'stock', '保留', ''],
+  ['存货管理', '呆滞分析、ABC 分析', 'stock', '保留', ''],
+  ['生产管理', '产品结构、替代料、BOM 变更', 'bom', '保留', ''],
+  ['生产管理', '生产计划', 'mo', '自动', '合同确认后自动产生工单建议'],
+  ['生产管理', '工单、工单变更、重工单', 'mo', '保留', ''],
+  ['生产管理', '领料、退料、超领', 'mo', '合并', '按 BOM 一键领料，超领需审批'],
+  ['生产管理', '生产入库', 'inbound', '合并', '完工后进入成品检验，合格自动入库'],
+  ['生产管理', '委外单、送料、进货、退料、超耗', 'ww', '合并', '委外一页管到底'],
+  ['检验管理', '进货、委外、生产入库、库存检验', 'inbound', '合并', '所有检验同一个队列，依来源区分'],
+  ['物料需求', '物料需求计算、齐套、缺料', 'mrp', '合并', ''],
+  ['生产成本', '月加权平均、工单成本、委外成本、人工制费', 'cost', '保留', ''],
+  ['应收应付', '销售发票、预开发票、红字发票、金税接口', 'ar', '保留', '外销发票随出运自动产生'],
+  ['应收应付', '收款单、收款核销单', 'ar', '合并', '认领即核销'],
+  ['应收应付', '采购发票、付款单、付款核销', 'ap', '合并', '三单匹配后排付款'],
+  ['应收应付', '应收应付账龄、超期跟催', 'ar', '升级', '30／60／90／180 天分段，记录跟催'],
+  ['应收应付', '应收应付开账', 'migrate', '合并', '上线时一次导入'],
+  ['会计总账', '会计科目、凭证、自动分录', 'gl', '自动', '单据审核后自动生成凭证'],
+  ['会计总账', '账簿、往来账、财务报表', 'gl', '保留', ''],
+  ['会计总账', '损益结转、汇兑损益结转、关账', 'gl', '合并', '关账前自动检查'],
+  ['行政办公', '报销、借款、物品出门、办公用品', '', '暂不纳入', '建议用企业微信审批，或放二期'],
+  ['工具', '附件管理', 'quote', '合并', '每张单据都能挂附件'],
+  ['工具', '未审核单据检查', 'gl', '合并', '关账检查的一项'],
+  ['工具', '个人消息中心', 'approvals', '升级', '审批中心＋企业微信推送'],
+  ['工具', '上机日志', 'perm', '保留', '操作日志']
+];
+
+/* ================= 需求确认 ================= */
+// [编号, 名称, 建议, 谁, 情境, 操作, 结果, 说明, 演示, 易助已有=0 / 新增=1]
+const REQ = [
+  ['销售', '从询价到收款的外贸主线', [
+    ['a-cust', '客户中心与公海私海', 'r1', '业务员', '询价、日常跟进', '建档、记录跟进；看应收、逾期、已订未出', '客户资源归公司，离职一键移交', '比易助客户查询中心多了跟进与对话', 'customers|C-301', 0],
+    ['a-quote', '结构化报价与版本', 'r1', '业务员', '客户询价时', '输入成本、汇率、运费、佣金，留每一版', '毛利低于门槛自动送审', '取代 Excel 报价附件', 'quote', 1],
+    ['a-pi', 'PI 即合同即订单', 'rm', '业务员', '客户确认后', '一键转 PI，设好订金、尾款', '不再分合同与订单两张单', '易助订单合同与订单合并', 'contract|PI20261103KEP', 0],
+    ['a-change', '订单变更连动生产', 'r1', '业务、跟单', '客户改数量、交期、包装', '开变更单，系统列出差异', '审批后自动改工单、重算物料需求', '', 'contract|PI20261103KEP|change', 0],
+    ['a-follow', '跟单看板', 'r1', '跟单', '每天追进度', '备料、生产、检验、出运一张看板', '逾期自动标红', '', 'follow', 1],
+    ['a-sample', '样品与借出', 'r1', '业务员', '寄样给客户测试', '登记寄样即库存借出，到期提醒', '测试通过一键转 PI', '易助借出单合并进来', 'samples', 0],
+    ['a-ship', '出运与单证', 'rm', '单证员', '出货前', '出库、商业发票、装箱单、报关资料一次产生', '出库后自动生成销售发票与应收', '取代销货单＋备注＋聊天软件', 'ship', 0],
+    ['a-after', '售后、返修与退货', 'r1', '售后、品质', '客户反映问题', '反查 PI，登记返修或退货', '退货入库检验后自动冲销应收', '易助销退单合并进来', 'after', 0],
+    ['a-perf', '归属业务与提成', 'r1', '老板、财务', '每月统计', '合同记录实际负责的业务', '业绩、提成按人统计', '', 'comm', 1]
+  ]],
+  ['采购', '需求自动算，采购只做决策', [
+    ['a-mrp', '物料需求与请购', 'rm', '采购、计划', '合同确认后', '系统依 BOM、库存、在途算出缺料', '一键产生请购，在请购单上直接比价', '合并易助请购、询价、核价、底稿', 'mrp', 0],
+    ['a-po', '采购单与变更', 'rm', '采购', '比价选定后', '产生采购单，金额超过门槛送审', '交期、到货进度一目了然', '', 'po', 0],
+    ['a-sup', '供应商与价格', 'r1', '采购', '平时维护', '供应商、价格表、交货准时率、品质合格率', '比价时自动带出', '', 'suppliers', 0]
+  ]],
+  ['仓库与品质', '收货、检验、入库一个队列', [
+    ['a-inbound', '收货与检验', 'rm', '仓库、品质', '采购到货、委外回货、完工', '同一个队列检验，合格入库、不合格验退', '入库后自动产生应付暂估', '合并易助进货、收料、各类检验', 'inbound', 0],
+    ['a-stock', '库存、批号、调拨与盘点', 'rm', '仓库', '日常', '查库存与批号，做调拨、盘点、其他出入库', '每笔异动都连回来源单据', '', 'stock', 0],
+    ['a-dead', '呆滞与 ABC 分析', 'ro', '仓库、老板', '每月', '找出久未动的料件', '减少积压', '', 'stock', 0]
+  ]],
+  ['生产', '工单由合同自动产生', [
+    ['a-mo', '工单、领料与完工', 'rm', '生产', '合同确认后', '系统产生工单建议，按 BOM 一键领料', '完工进入成品检验，合格自动入库', '合并易助生产计划、工单、领退料、入库', 'mo', 0],
+    ['a-ww', '委外加工', 'rm', '生产、采购', 'PCBA 外协贴片', '送料、回货、加工费一页管到底', '回货检验后自动产生应付', '合并易助委外 9 种单据', 'ww', 0],
+    ['a-bom', '产品、客户品号与 BOM', 'rm', '工程', '新品、改版', '维护 BOM、替代料，留变更记录', '客户品号自动对应内部品号', '', 'bom', 0]
+  ]],
+  ['财务', '单据审核后自动生成凭证', [
+    ['a-ar', '应收：发票、收款认领与核销', 'rm', '财务', '出货后、款到时', '出运自动开发票；到账按原币认领即核销', '付款人与买方不一致时提示', '合并易助收款单与核销单', 'ar', 0],
+    ['a-aging', '账龄与超期跟催', 'r1', '财务、业务', '每周', '按 30／60／90／180 天看逾期并记录跟催', '逾期自动提醒负责业务', '', 'ar|aging', 1],
+    ['a-ap', '应付：三单匹配与付款', 'rm', '财务', '收到供应商发票', '发票对采购单与入库自动比对', '单价不符自动标示，排付款计划', '取代易助价差异常表', 'ap', 0],
+    ['a-fx', '汇率锁定、结汇与调汇', 'r1', '财务', '月初、结汇、月末', '每月锁定记账汇率，结汇记汇差，月末自动调汇', '汇兑损益自动入账', '', 'fx', 1],
+    ['a-rebate', '出口退税资料', 'r2', '财务', '申报前', '专票与报关单配对', '规格写法不一致提前发现', '', 'rebate', 1],
+    ['a-cost', '成本与单票利润', 'r1', '财务、老板', '月末', '月加权平均成本、工单与委外成本', '每张 PI 的实际利润与差异', '', 'cost', 0],
+    ['a-gl', '总账、报表与关账', 'rm', '会计', '每天、月末', '自动凭证、科目余额、利润表；关账前自动检查', '可导出给会计软件或会计师', '若正式账在其他软件，可只用导出', 'gl', 0]
+  ]],
+  ['系统', '审批、权限与上线', [
+    ['a-appr', '审批设置', 'rm', '管理员', '设定谁审批', '每种单据设层级与门槛，默认两段', '推送企业微信', '', 'apprset', 0],
+    ['a-cat', '业务分类整理', 'r1', '管理员', '上线前', '性质类型拆成四个字段', '报表能分外销内销、样品量产', '', 'category', 1],
+    ['a-perm', '权限与操作日志', 'rm', '管理员', '新人、调岗', '按角色设定范围与字段', '新账号默认不可见；操作留日志', '', 'perm', 0],
+    ['a-migrate', '上线迁移', 'rm', '我方实施', '切换系统时', '导入主档、期初库存、未结单据与应收应付', '易助转为只读查询历史', '', 'migrate', 1],
+    ['a-admin', '行政办公（报销、借款）', 'ro', '行政', '日常', '暂用企业微信审批', '二期再评估是否纳入', '易助有，但与外贸主线关联低', 'map', 0],
+    ['a-consign', '委托代销', 'ro', '业务', '有寄售客户时', '请贵司确认是否在用', '在用就纳入二期', '易助有，未看到资料', 'map', 0],
+    ['a-window', '国际贸易单一窗口', 'r2', '单证员', '报关、产地证', '导出符合格式的资料', '少打一次字', '', 'window', 1],
+    ['a-portal', '客户与外协厂门户', 'r2', '客户、外协厂', '查进度、下载单据', '用链接登录，只看自己的单', '减少来回询问', '', 'portal', 1]
+  ]]
+];
+const REC = { r1: '建议一期', r2: '建议二期', ro: '可选', rm: '必要' };
+const CH = { yes: '要', later: '之后再说', no: '不要', talk: '待讨论' };
+const ALL = REQ.flatMap(g => g[2]);
+</script>
+<script>
+/* ================= 共用片段 ================= */
+const pill = (t, k) => `<span class="pill p-${k}">${t}</span>`;
+const mono = s => `<span class="m">${s}</span>`;
+const piBtn = pi => `<button type="button" class="btn sm" data-go="contract|${pi}">${pi}</button>`;
+const goBtn = (spec, t) => `<button type="button" class="btn sm" data-go="${spec}">${t}</button>`;
+function table(head, rows, opt = {}) {
+  const n = opt.num || [];
+  return `<div class="tbl"><table><thead><tr>${head.map((h, i) => `<th class="${n.includes(i) ? 'n' : ''}">${h}</th>`).join('')}</tr></thead><tbody>${rows.map((r, ri) => `<tr ${opt.click ? `class="click ${opt.sel && opt.sel(ri) ? 'sel' : ''}" ${opt.click(ri)}` : ''}>${r.map((c, i) => `<td class="${n.includes(i) ? 'n' : ''}">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+const head = (t, p, right = '') => `<div class="ph"><div><h1>${t}</h1><p>${p}</p></div>${right}</div>`;
+const flow = steps => `<div class="lvl" style="margin-bottom:14px">${steps.map((s, i) => `${i ? '<span class="sep">→</span>' : ''}<span class="chip ${s[1] ? 'on' : ''}">${s[0]}</span>`).join('')}</div>`;
+function spark(arr, color) {
+  const w = 88, h = 32, max = Math.max(...arr), min = Math.min(...arr), r = max - min || 1;
+  const pts = arr.map((v, i) => [i / (arr.length - 1) * (w - 4) + 2, h - 4 - (v - min) / r * (h - 8)]);
+  const line = pts.map(p => p.map(n => n.toFixed(1)).join(',')).join(' '), last = pts[pts.length - 1];
+  return `<svg class="sp" viewBox="0 0 ${w} ${h}" aria-hidden="true"><polygon points="2,${h - 2} ${line} ${w - 2},${h - 2}" fill="${color}" opacity=".12"/><polyline points="${line}" fill="none" stroke="${color}" stroke-width="1.6"/><circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2.5" fill="${color}"/></svg>`;
+}
+function scStatus(c) {
+  if (c.block) return pill('待审批', 'warn');
+  const n = NODES[c.type];
+  if (c.node >= n.length - 1) return pill('已完成', 'ok');
+  if (c.late) return pill(`${n[c.node]} · 逾期 ${c.late} 天`, 'bad');
+  return pill(n[c.node], 'run');
+}
+const stepper = (n, cur) => `<div class="stepper">${n.map((x, i) => `<div class="st ${i < cur ? 'done' : i === cur ? 'now' : ''}"><span class="dot">${i < cur ? ic('check') : ''}</span>${x}</div>`).join('')}</div>`;
+const agingBucket = d => d <= 0 ? '未到期' : d <= 30 ? '1–30 天' : d <= 60 ? '31–60 天' : d <= 90 ? '61–90 天' : d <= 180 ? '91–180 天' : '180 天以上';
+const BUCKETS = [['未到期', 'var(--accent)'], ['1–30 天', 'var(--ok)'], ['31–60 天', 'var(--warn)'], ['61–90 天', '#D9822B'], ['91–180 天', 'var(--bad)'], ['180 天以上', '#8E1B13']];
+const MODE = { 保留: 'run', 合并: 'ok', 自动: 'yz', 升级: 'ok', 拆分: 'yz', 暂不纳入: 'mute' };
+
+const V = {};
+
+V.req = () => {
+  const c = ALL.filter(r => S.choice[r[0]]), n = k => ALL.filter(r => S.choice[r[0]] === k).length;
+  const pct = Math.round(c.length / ALL.length * 100);
+  return head('需求确认', `一体化版：易助的功能全部纳入本系统，共 ${ALL.length} 项。标“新增”的是易助没有、本系统补上的。`,
+    `<div class="toolbar"><button class="btn" type="button" data-act="apply">${ic('check')}全部按我们的建议选</button><button class="btn" type="button" data-act="reset">${ic('reset')}清空选择</button></div>`) + `
+  <div class="card">
+    <h3>进度 <small>已确认 ${c.length} / ${ALL.length} 项</small></h3>
+    <div class="req-sum"><div><b>${n('yes')}</b><span>要</span></div><div><b>${n('later')}</b><span>之后再说</span></div><div><b>${n('no')}</b><span>不要</span></div><div><b>${n('talk')}</b><span>待讨论</span></div></div>
+    <div class="req-prog"><i style="width:${pct}%"></i></div>
+    <p class="note">标签：<span class="rec rm">必要</span> 系统要运作一定要有；<span class="rec r1">建议一期</span>；<span class="rec r2">建议二期</span>；<span class="rec ro">可选</span>；<span class="rec new">新增</span> 易助没有的功能。每个易助功能放在哪里，见 <button class="btn sm" type="button" data-go="map">易助功能对照</button>。</p>
+  </div>` +
+  REQ.map(([g, sub, items]) => `<section class="req-group"><h2>${g}<small>${sub}</small></h2><div class="req-list">${items.map(([id, name, rec, who, when, what, result, why, demo, isNew]) => `
+    <article class="req" data-c="${S.choice[id] || ''}">
+      <div class="hd"><b>${name}</b><span class="toolbar" style="gap:4px">${isNew ? '<span class="rec new">新增</span>' : ''}<span class="rec ${rec}">${REC[rec]}</span></span></div>
+      <dl class="scn"><dt>谁</dt><dd>${who}</dd><dt>情境</dt><dd>${when}</dd><dt>操作</dt><dd>${what}</dd><dt>结果</dt><dd>${result}</dd></dl>
+      ${why ? `<div class="why">${why}</div>` : ''}
+      <div class="choose" role="group" aria-label="${name}">${Object.entries(CH).map(([k, t]) => `<button type="button" data-req="${id}" data-v="${k}" aria-pressed="${S.choice[id] === k}">${t}</button>`).join('')}<button type="button" class="go" data-go="${demo}">看演示 ${ic('arrow')}</button></div>
+      <label class="fb" for="note-${id}">意见或补充说明<textarea id="note-${id}" data-note="${id}" rows="2" placeholder="例如：我们现在的做法是……／希望增加……">${esc(S.note[id] || '')}</textarea></label>
+    </article>`).join('')}</div></section>`).join('') + `
+  <section class="req-group"><h2>导出结果<small>复制后贴到微信或邮件发给我们</small></h2>
+    <div class="card export"><label class="fb" for="note-_all" style="margin-bottom:12px">其他意见<textarea id="note-_all" data-note="_all" rows="4" placeholder="例如：希望手机上能查库存……">${esc(S.note._all || '')}</textarea></label><textarea id="exportText" readonly aria-label="确认结果">${exportText()}</textarea>
+    <div class="toolbar" style="margin-top:10px"><button class="btn pri" type="button" data-act="copy">${ic('copy')}复制结果</button><span class="note" style="margin:0">选择会保存在这台电脑的浏览器里。</span></div></div>
+  </section>`;
+};
+
+V.map = () => {
+  const modes = ['全部', '保留', '合并', '自动', '升级', '拆分', '暂不纳入'];
+  const list = MAP.filter(m => S.mapF === '全部' || m[3] === S.mapF);
+  const cnt = k => MAP.filter(m => m[3] === k).length;
+  const covered = MAP.filter(m => m[2]).length;
+  return head('易助功能对照', '易助的每个功能，在本系统放在哪一页、怎么处理。每个功能只有一个归属，不会在两个地方重复录入。') + `
+  <div class="grid g4">
+    <div class="card kpi"><div class="k">易助功能（按录屏整理）</div><div class="v">${MAP.length}</div></div>
+    <div class="card kpi"><div class="k">已纳入本系统</div><div class="v up">${covered}</div><div class="d">${Math.round(covered / MAP.length * 100)}%</div></div>
+    <div class="card kpi"><div class="k">合并或自动化</div><div class="v">${cnt('合并') + cnt('自动')}</div><div class="d">原本要开多张单的，现在一步完成</div></div>
+    <div class="card kpi"><div class="k">暂不纳入</div><div class="v">${cnt('暂不纳入')}</div><div class="d">行政办公、委托代销，待确认</div></div>
+  </div>
+  <div class="card mt"><h3>设计原则</h3><div class="grid g3">
+    <div><b>一份资料只录一次</b><p class="note">报价带到 PI，PI 带到工单与采购，出运带出出库与发票，收款带出核销与凭证。</p></div>
+    <div><b>前一步自动产生下一步</b><p class="note">易助要手动开的销货单、生产计划、请购、凭证，改由上一张单据审核后自动产生。</p></div>
+    <div><b>相似的单据合成一个流程</b><p class="note">四种检验合成一个队列；询价、核价、底稿合到请购上比价；收款与核销一次完成。</p></div>
+  </div></div>
+  <div class="toolbar mt" style="margin-bottom:12px"><div class="filters">${modes.map(f => `<button type="button" data-act="mapF" data-id="${f}" aria-pressed="${S.mapF === f}">${f}${f === '全部' ? '' : ' ' + cnt(f)}</button>`).join('')}</div></div>` +
+  table(['易助模块', '易助功能', '本系统位置', '处理方式', '说明'], list.map(m => [m[0], `<span class="wrap">${m[1]}</span>`, m[2] ? goBtn(m[2], (TITLE[m[2]] || ['', m[2]])[1]) : '—', pill(m[3], MODE[m[3]]), `<span class="wrap">${m[4]}</span>`]));
+};
+
+V.dash = () => {
+  const lk = curLock(), od = overdueAmt();
+  const short = DB.mrp.filter(m => shortage(m) > 0).length, qc = DB.inbound.filter(x => x.st === '待检验').length;
+  const apDue = DB.ap.filter(x => x.st === '本周到期').reduce((a, x) => a + x.amt, 0);
+  const months = [['6月', 186], ['7月', 214], ['8月', 198], ['9月', 241], ['10月', 263], ['11月', 228]];
+  const max = 300, cw = 520, chh = 170;
+  const bars = months.map(([m, v], i) => { const x = 46 + i * 78, hh = v / max * (chh - 30), y = chh - 10 - hh; return `<rect x="${x}" y="${y.toFixed(1)}" width="40" height="${hh.toFixed(1)}" rx="5" fill="var(--accent)" opacity="${i === months.length - 1 ? 1 : .32}"/><text x="${x + 20}" y="${chh + 6}" text-anchor="middle">${m}</text><text x="${x + 20}" y="${(y - 6).toFixed(1)}" text-anchor="middle" style="fill:var(--ink)">${v}</text>`; }).join('');
+  const grid = [0, 100, 200, 300].map(v => { const y = chh - 10 - v / max * (chh - 30); return `<line x1="34" x2="${cw}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--line)"/><text x="28" y="${(y + 4).toFixed(1)}" text-anchor="end">${v}</text>`; }).join('');
+  const todo = [
+    ...DB.approvals.filter(a => a.status === '待审批').map(a => [`审批：${a.type}`, mono(a.ref), goBtn('approvals', '去审批')]),
+    ...DB.receipts.filter(r => !r.claimed).map(r => [`到账待认领 USD ${fmt(r.amt)}`, mono(r.id), goBtn('ar', '去认领')]),
+    ...(short ? [[`${short} 种料件缺料`, mono('物料需求'), goBtn('mrp', '去请购')]] : []),
+    ...(qc ? [[`${qc} 笔收货待检验`, mono('收货与检验'), goBtn('inbound', '去检验')]] : []),
+    ...DB.ap.filter(x => x.st === '待核对').map(x => [`采购发票单价不一致 · ${supOf(x.sup).name}`, mono(x.id), goBtn('ap', '去核对')])
+  ];
+  return head('工作台', `早上好，林晓。今天是 11 月 18 日，有 ${todo.length} 件事要处理。`, `<button class="btn" type="button" data-act="toast" data-msg="已导出本月经营报表 Excel（演示）">导出报表</button>`) + `
+  <div class="grid g4">
+    <div class="card kpi"><div class="k">本月出运（千美元）</div><div class="row"><div><div class="v">228</div><div class="d up">比上月同期 +6%</div></div>${spark([186, 214, 198, 241, 263, 228], 'var(--accent)')}</div></div>
+    <div class="card kpi"><div class="k">逾期应收</div><div class="row"><div><div class="v">USD ${fmt(od / 1000, 1)}k</div><div class="d dn">${arOpen().filter(r => daysPast(r.due) > 0).length} 张发票逾期</div></div>${spark([38, 52, 61, 70, 68, od / 1000], 'var(--bad)')}</div></div>
+    <div class="card kpi"><div class="k">本周应付到期</div><div class="row"><div><div class="v">¥${fmt(apDue)}</div><div class="d">光芯电子 11-20</div></div>${spark([20, 32, 28, 41, 36, apDue / 1000], 'var(--warn)')}</div></div>
+    <div class="card kpi"><div class="k">本月锁定汇率</div><div class="row"><div><div class="v">${lk[1].toFixed(4)}</div><div class="d">USD/CNY</div></div>${spark(DB.fx.daily.map(d => d[1]), 'var(--yz)')}</div></div>
+  </div>
+  <div class="grid g32 mt">
+    <div class="card"><h3>出运金额趋势 <small>千美元</small></h3><svg class="chart" viewBox="0 0 ${cw} ${chh + 14}" role="img" aria-label="近六个月出运金额，十月最高为 263 千美元" style="width:100%;height:auto">${grid}${bars}</svg></div>
+    <div class="card"><h3>待办 <small>${todo.length} 项</small></h3>${table(['事项', '单号', ''], todo)}</div>
+  </div>
+  <div class="card mt"><h3>进行中合同</h3>${table(['PI', '客户', '当前节点', '工单进度', '缺料', '预计出货'], DB.contracts.filter(c => c.node < 9).map(c => {
+    const w = DB.wos.filter(x => c.wo.includes(x.id)), d = w.reduce((a, x) => a + x.done, 0), q = w.reduce((a, x) => a + x.qty, 0);
+    const sh = DB.mrp.filter(m => m.for === c.pi && shortage(m) > 0).map(m => m.item);
+    return [piBtn(c.pi), custOf(c.cust).short, scStatus(c), q ? `${fmt(d)} / ${fmt(q)}` : '—', sh.length ? pill(sh.join('、'), 'bad') : '—', c.pi === 'PI20261028ALT' ? '11-24' : c.pi === 'PI20261103KEP' ? '11-28' : c.pi === 'HT20261108YF' ? '12-03' : '待定'];
+  }))}</div>`;
+};
+
+V.approvals = () => head('审批中心', '报价、合同、变更、采购、付款都在这里审批，也会推送到企业微信') + `
+  <div class="grid g32">
+    <div class="card"><h3>审批事项 <small>${pendingAp()} 项待处理</small></h3>${table(['单号', '类型', '关联', '说明', '申请人', '进度', ''], DB.approvals.map(a => [mono(a.id), a.type, goBtn(a.go, a.ref), `<span class="wrap">${a.detail}</span>`, a.who,
+      a.status === '待审批' ? pill(a.step, 'warn') : a.status === '已核准' ? pill('已核准', 'ok') : pill('已退回', 'mute'),
+      a.status === '待审批' ? `<div class="toolbar"><button class="btn sm pri" type="button" data-act="approve" data-id="${a.id}">核准</button><button class="btn sm dng" type="button" data-act="reject" data-id="${a.id}">退回</button></div>` : '']))}
+    <p class="note">层级与门槛在 ${goBtn('apprset', '审批设置')} 调整。</p></div>
+    <div class="card"><h3>企业微信推送预览</h3><div class="phone"><div class="pc"><h5>光数外贸 · 待审批</h5>${DB.approvals.filter(a => a.status === '待审批').slice(0, 2).map(a => `<div style="border-top:1px solid var(--line);padding-top:6px;margin-top:6px"><b>${a.type}</b><br><span style="color:var(--muted)">${a.ref} · ${a.detail}</span></div>`).join('') || '<span style="color:var(--muted)">目前没有待审批</span>'}<div class="toolbar" style="margin-top:10px"><span class="btn sm pri">打开处理</span></div></div></div></div>
+  </div>`;
+
+V.customers = () => {
+  const list = DB.customers.filter(c => S.custF === '全部' || c.pool === S.custF || c.type === S.custF);
+  return head('客户', '公海与私海 · 30 天没跟进自动回公海 · 点一行打开客户中心', `<button class="btn pri" type="button" data-act="toast" data-msg="已新增客户（演示）">${ic('plus')}新增客户</button>`) + `
+  <div class="toolbar" style="margin-bottom:12px"><div class="filters">${['全部', '私海', '公海', '外销', '内销'].map(f => `<button type="button" data-act="custF" data-id="${f}" aria-pressed="${S.custF === f}">${f}</button>`).join('')}</div></div>` +
+    table(['客户', '国家', '币种', '等级', '归属业务', '未收（原币）', '沟通', '最近跟进', ''], list.map(c => {
+      const due = arOpen().filter(r => r.cust === c.id).reduce((a, r) => a + r.amt - r.got, 0);
+      return [`<b>${c.name}</b>`, c.country, c.cur, c.level, c.sales, due ? `${c.cur} ${fmt(due)}` : '—', c.ch, c.last, c.pool === '公海' ? `<button class="btn sm" type="button" data-act="claimCust" data-id="${c.id}">领取</button>` : pill('私海', 'run')];
+    }), { num: [5], click: i => `data-act="openCust" data-id="${list[i].id}"` });
+};
+function custDrawer(id) {
+  const c = custOf(id), scs = DB.contracts.filter(x => x.cust === id);
+  const ar = arOpen().filter(r => r.cust === id), due = ar.reduce((a, r) => a + r.amt - r.got, 0), od = ar.filter(r => daysPast(r.due) > 0).reduce((a, r) => a + r.amt - r.got, 0);
+  const ordered = scs.filter(x => x.node < 5).reduce((a, x) => a + total(x), 0), shipped = scs.filter(x => x.node >= 5 && x.node < 9).reduce((a, x) => a + total(x), 0), used = due + ordered;
+  return `<div class="dh"><div><h2>${c.name}</h2><p class="note" style="margin:3px 0 0">${c.country} · ${c.level} 级 · 归属 ${c.sales}</p></div><button class="x" type="button" data-act="close" aria-label="关闭">${ic('x')}</button></div>
+  <div class="mini"><div><span>未收应收</span><b>${c.cur} ${fmt(due)}</b></div><div><span>其中逾期</span><b class="${od ? 'dn' : ''}">${c.cur} ${fmt(od)}</b></div><div><span>已订未出</span><b>${c.cur} ${fmt(ordered)}</b></div><div><span>已出未收</span><b>${c.cur} ${fmt(shipped)}</b></div><div><span>信用额度</span><b>${c.cur} ${fmt(c.credit)}</b></div><div><span>额度已用</span><b class="${used > c.credit ? 'dn' : ''}">${Math.round(used / c.credit * 100)}%</b></div></div>
+  <div class="kv sep"><div><span>联系人</span>${c.contact}</div><div><span>沟通渠道</span>${c.ch}</div><div><span>付款条件</span>${c.terms}</div><div><span>业务类型</span>${c.type}</div></div>
+  <h3>合同</h3>${scs.length ? table(['PI', '金额', '状态'], scs.map(x => [piBtn(x.pi), `${x.cur} ${fmt(total(x), 2)}`, scStatus(x)]), { num: [1] }) : '<p class="note">还没有合同。</p>'}
+  ${ar.length ? `<h3>未收发票</h3>${table(['发票', '到期', '未收', '账龄'], ar.map(r => [mono(r.inv), r.due, `${r.cur} ${fmt(r.amt - r.got)}`, daysPast(r.due) > 0 ? pill(`逾期 ${daysPast(r.due)} 天`, 'bad') : pill('未到期', 'mute')]), { num: [2] })}` : ''}
+  <h3>跟进记录</h3><div class="timeline">${c.follow.map(f => `<div><span class="t">${f[0]}</span><span class="d"></span><span><b>${f[1]}</b> · ${f[2]}</span></div>`).join('')}</div>
+  <h3>${c.ch} 对话归档</h3><div class="chat">${c.chat.map(m => `<div class="bubble ${m[0] === '我' ? 'me' : ''}"><small>${m[0] === '我' ? c.sales : c.contact.split('（')[0]} · ${m[1]}</small>${esc(m[2])}</div>`).join('')}</div>
+  <div class="toolbar" style="margin-top:18px"><button class="btn pri" type="button" data-act="toast" data-msg="已新增跟进记录（演示）">新增跟进</button><button class="btn" type="button" data-act="toast" data-msg="已移交给陈一凡（演示）">移交给其他业务</button></div>`;
+}
+
+V.quote = () => {
+  const q = S.q, p = prodOf(q.prod), cu = custOf(q.cust);
+  const bom = DB.boms[q.prod], matCost = bom ? bom.reduce((a, b) => a + b[1] * DB.mats[b[0]][2], 0) : null;
+  const rebate = q.cost / 1.13 * q.rebate / 100, unit = q.cost - rebate + q.extra;
+  const price = unit / q.fx / (1 - q.margin / 100) / (1 - q.comm / 100) + q.freight;
+  const profit = (price - q.freight) * q.fx * (1 - q.comm / 100) - unit, rate = profit / ((price - q.freight) * q.fx) * 100, low = rate < 12;
+  S.calc = { price, rate };
+  const f = (k, lab, step) => `<label for="q-${k}">${lab}<input id="q-${k}" type="number" step="${step}" value="${q[k]}" data-q="${k}"></label>`;
+  return head('报价', '试算后保存为报价单，每次改价留一版；毛利低于 12% 自动送审，核准后一键转 PI') + `
+  <div class="grid g2">
+    <div class="card"><h3>成本与条件</h3><div class="form">
+      <label for="q-cust">客户<select id="q-cust" data-qs="cust">${DB.customers.filter(c => c.type === '外销').map(c => `<option value="${c.id}" ${c.id === q.cust ? 'selected' : ''}>${c.name}</option>`).join('')}</select></label>
+      <label for="q-prod">产品（客户品号）<select id="q-prod" data-qs="prod">${DB.products.map(x => `<option value="${x.code}" ${x.code === q.prod ? 'selected' : ''}>${x.code} · ${x.name}</option>`).join('')}</select></label>
+      ${f('cost', '含税成本（元／只）', 1)}${f('rebate', '出口退税率（%）', 1)}
+      ${f('fx', '报价汇率（USD/CNY）', 0.0001)}${f('extra', '包装与杂费（元／只）', 0.5)}
+      ${f('freight', '运费分摊（USD／只）', 0.05)}${f('qty', '数量（只）', 10)}
+      ${f('comm', '佣金（%）', 0.5)}${f('margin', '目标利润率（%）', 0.5)}
+    </div><p class="note">成本默认带入本系统的月加权平均成本${matCost ? `；BOM 材料成本约 ¥${fmt(matCost, 2)}／只` : ''}。汇率默认带入本月锁定汇率 ${curLock()[1].toFixed(4)}。</p></div>
+    <div class="card"><h3>报价结果 <small>${cu.short} · ${p.name}</small></h3><div class="res">
+      <div><span>退税（元／只）</span><span class="m">${fmt(rebate, 2)}</span></div>
+      <div><span>实际成本（元／只）</span><span class="m">${fmt(unit, 2)}</span></div>
+      <div><span>每只利润（元）</span><span class="m">${fmt(profit, 2)}</span></div>
+      <div><span>毛利率</span><span>${low ? pill(fmt(rate, 1) + '%，低于 12% 需审批', 'warn') : pill(fmt(rate, 1) + '%', 'ok')}</span></div>
+      <div><span>合计（${fmt(q.qty)} 只）</span><span class="m">USD ${fmt(price * q.qty, 2)}</span></div>
+      <div class="big"><span>报价（USD／只）</span><span class="m">${fmt(price, 2)}</span></div>
+    </div>
+    <div class="toolbar" style="margin-top:14px"><button class="btn pri" type="button" data-act="saveQuote">${low ? '保存并送审批' : '保存报价单'}</button><button class="btn" type="button" data-act="toast" data-msg="已生成英文报价单 PDF（演示）">英文报价单</button><button class="btn" type="button" data-act="toast" data-msg="已附加规格书 PDF（演示）">${ic('clip')}附件</button></div></div>
+  </div>
+  <div class="card mt"><h3>报价单</h3>${table(['报价单', '版本', '客户', '产品', '数量', '单价 USD', '毛利率', '附件', '状态', ''], DB.quotes.map(x => [mono(x.id), 'V' + x.ver, custOf(x.cust).short, prodOf(x.prod).name, fmt(x.qty), fmt(x.price, 2), fmt(x.margin, 1) + '%', x.att,
+    x.status === '待审批' ? pill('待审批', 'warn') : x.status === '已批准' ? pill('已批准', 'ok') : x.status === '已发客户' ? pill('已发客户', 'yz') : pill('已转合同', 'run'),
+    x.status === '已批准' || x.status === '已发客户' ? `<button class="btn sm pri" type="button" data-act="toContract" data-id="${x.id}">转 PI</button>` : x.pi ? piBtn(x.pi) : x.status === '待审批' ? goBtn('approvals', '去审批') : '']), { num: [4, 5, 6, 7] })}</div>
+  <div class="card mt"><h3>版本记录 <small>BJ2026110301 · Kepler</small></h3>${table(['版本', '日期', '单价', '说明'], DB.quoteVers.map(v => [v[0], v[1], v[2], `<span class="wrap">${v[3]}</span>`]))}</div>`;
+};
+
+V.contracts = () => {
+  const list = DB.contracts.filter(c => S.scF === '全部' || c.type === S.scF || (S.scF === '待收款' && c.pay.some(p => p[3] !== '已收')));
+  return head('合同（PI）', '一张 PI 就是合同，也是订单；确认后自动产生工单建议与物料需求', `<button class="btn pri" type="button" data-go="quote">${ic('plus')}新建合同</button>`) + `
+  <div class="toolbar" style="margin-bottom:12px"><div class="filters">${['全部', '外销', '内销', '待收款'].map(f => `<button type="button" data-act="scF" data-id="${f}" aria-pressed="${S.scF === f}">${f}</button>`).join('')}</div></div>` +
+    table(['PI／合同号', '客户', '归属业务', '贸易条件', '金额', '当前节点', '工单', '版本', ''], list.map(c => [`<b class="m">${c.pi}</b>`, custOf(c.cust).short, c.sales, c.term, `${c.cur} ${fmt(total(c), 2)}`, scStatus(c), c.wo.length ? c.wo.length + ' 张' : '—', 'V' + String(c.ver).padStart(3, '0'), goBtn('contract|' + c.pi, '打开')]), { num: [4] });
+};
+
+V.contract = () => {
+  const c = scOf(S.arg) || DB.contracts[0], cu = custOf(c.cust);
+  const paid = c.pay.filter(p => p[3] === '已收').reduce((a, p) => a + p[1], 0);
+  const chg = DB.changes.filter(x => x.pi === c.pi), sh = DB.ships.find(s => s.id === c.ship);
+  const tabs = [['lines', '明细'], ['pay', '款项'], ['change', `变更${chg.length ? ' ' + chg.length : ''}`], ['make', '采购与生产'], ['ship', '出运与单证'], ['trace', '追溯'], ['profit', '利润']];
+  if (!tabs.some(t => t[0] === S.tab)) S.tab = 'lines';
+  const wos = DB.wos.filter(w => c.wo.includes(w.id)), pos = DB.pos.filter(p => c.po.includes(p.id) || p.for === c.pi), mrp = DB.mrp.filter(m => m.for === c.pi);
+  const T = {
+    lines: () => table(['客户品号', '内部品号', '品名', '海关编码', '数量', '单价', '金额'], c.lines.map(l => [mono(l[0]), mono(prodOf(l[0]).inner), prodOf(l[0]).name, mono(prodOf(l[0]).hs), fmt(l[1]), fmt(l[2], 2), fmt(l[1] * l[2], 2)]), { num: [4, 5, 6] }),
+    pay: () => table(['款项', '金额', '到期日', '状态', ''], c.pay.map(p => [p[0], `${c.cur} ${fmt(p[1], 2)}`, p[2], p[3] === '已收' ? pill('已收', 'ok') : p[3] === '逾期' ? pill(`逾期 ${daysPast(p[2])} 天`, 'bad') : p[3] === '到账待认领' ? pill('到账待认领', 'yz') : pill(p[3], 'mute'), p[3] !== '已收' && c.cur === 'USD' ? goBtn('ar', '去认领') : '']), { num: [1] }) + `<p class="note">已收 ${c.cur} ${fmt(paid, 2)}，未收 ${c.cur} ${fmt(total(c) - paid, 2)}。认领后自动核销发票并产生凭证。</p>`,
+    change: () => (chg.length ? chg.map(x => `<div class="card" style="margin-bottom:12px;background:var(--card2)"><h3>${x.id} · V${x.ver} <small>${x.date} · ${x.by} · ${x.reason}</small>${x.st === '待审批' ? pill('待审批', 'warn') : pill(x.st, 'ok')}</h3>${table(['项目', '原内容', '变更后'], x.diff.map(d => [d[0], `<span style="text-decoration:line-through;color:var(--faint)">${d[1]}</span>`, `<b>${d[2]}</b>`]))}<p class="note">连动：${x.effect}</p></div>`).join('') : '<p class="note">这张合同还没有变更。</p>') + `<div class="toolbar"><button class="btn pri" type="button" data-act="toast" data-msg="已建立变更单 V${String(c.ver + 1).padStart(3, '0')}（演示）">${ic('plus')}新增变更</button></div>`,
+    make: () => `${flow([['物料需求', 1], ['请购比价', pos.length > 0], ['采购到货', pos.some(p => p.recv)], ['领料生产', wos.some(w => w.issued)], ['完工检验', wos.some(w => w.done)]])}
+      <h3>工单</h3>${wos.length ? table(['工单', '内部品号', '数量', '已完工', '状态'], wos.map(w => [goBtn('mo', w.id), mono(prodOf(w.item).inner), fmt(w.qty), fmt(w.done), w.st === '欠料' ? pill('欠料', 'bad') : w.st === '已完工' ? pill(w.st, 'ok') : pill(w.st, 'run')]), { num: [2, 3] }) : `<p class="note">${c.block ? '信用额度核准后自动产生工单建议。' : '还没有工单。'}</p>`}
+      <h3 class="mt">物料需求</h3>${mrp.length ? table(['料件', '需求', '库存', '在途', '缺料'], mrp.map(m => [`${mono(m.item)} ${nameOf(m.item)}`, fmt(m.need), fmt(m.stock), fmt(m.onway), shortage(m) ? `<b class="dn">${fmt(shortage(m))}</b>` : '0']), { num: [1, 2, 3, 4] }) : '<p class="note">料件充足或尚未计算。</p>'}
+      ${pos.length ? `<h3 class="mt">采购单</h3>${table(['采购单', '供应商', '交期', '状态'], pos.map(p => [goBtn('po', p.id), supOf(p.sup).name, p.due, pill(p.st, p.st === '已入库' ? 'ok' : p.st === '待审批' ? 'warn' : 'run')]))}` : ''}`,
+    ship: () => sh ? table(['出运', '方式', '路线', '出库单', '单证', '状态'], [[goBtn('ship|' + sh.id, sh.id), sh.mode, sh.route, mono(sh.ck), `${Object.values(sh.docs).filter(Boolean).length}/5`, pill(sh.st, 'ok')]]) : '<p class="note">还没有出运。完工检验入库后，在“出运与单证”建立出运即可自动出库。</p>',
+    trace: () => traceTree(c),
+    profit: () => `<div class="kv"><div><span>预估利润</span>¥${fmt(c.est)}</div><div><span>实际利润</span>${c.act == null ? '未结案' : '¥' + fmt(c.act)}</div><div><span>合同金额</span>${c.cur} ${fmt(total(c), 2)}</div><div><span>产地证</span>${c.co}</div></div>${c.act != null ? `<p class="note">${goBtn('cost', '看差异拆解')}</p>` : ''}`
+  };
+  return `<button class="back" type="button" data-go="contracts">${ic('left')}返回合同列表</button>
+  <div class="card">
+    ${c.block ? `<div class="banner warn"><b>暂停</b><span>${c.block}。${goBtn('approvals', '去审批')}</span></div>` : ''}
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:baseline">
+      <div style="display:flex;gap:10px;align-items:baseline;flex-wrap:wrap"><span class="m" style="font-size:21px;font-weight:650">${c.pi}</span><button class="btn sm" type="button" data-act="openCust" data-id="${cu.id}">${cu.name}</button>${scStatus(c)}</div>
+      <div><span style="font-family:var(--font-d);font-size:21px;font-weight:700">${c.cur} ${fmt(total(c), 2)}</span> <span class="note" style="margin:0">${c.term}</span></div>
+    </div>
+    ${stepper(NODES[c.type], c.node)}
+    <div class="kv sep"><div><span>付款条件</span>${c.pay.map(p => p[0]).join('，')}</div><div><span>归属业务</span>${c.sales}</div><div><span>业务类型 · 用途</span>${c.type} · ${c.use}</div><div><span>当前版本</span>V${String(c.ver).padStart(3, '0')}</div></div>
+    <div class="toolbar" style="margin-top:14px"><button class="btn pri" type="button" data-act="advance" data-id="${c.pi}" ${c.block || c.node >= NODES[c.type].length - 1 ? 'disabled' : ''}>完成「${NODES[c.type][c.node]}」，进入下一步</button><button class="btn" type="button" data-act="toast" data-msg="已发送 PI 给客户（演示）">发 PI 给客户</button></div>
+  </div>
+  <div class="card mt"><div class="tabs" role="tablist">${tabs.map(([k, n]) => `<button type="button" role="tab" aria-selected="${S.tab === k}" data-act="tab" data-id="${k}">${n}</button>`).join('')}</div>${T[S.tab]()}</div>`;
+};
+
+function traceTree(c) {
+  const cu = custOf(c.cust), wos = DB.wos.filter(w => c.wo.includes(w.id)), wws = DB.wws.filter(w => c.wo.includes(w.wo)), pos = DB.pos.filter(p => p.for === c.pi);
+  const recv = c.pay.filter(p => p[3] === '已收').reduce((a, p) => a + p[1], 0), sh = DB.ships.find(s => s.id === c.ship), q = DB.quotes.find(x => x.pi === c.pi);
+  const node = (st, t, sub, ref, cls = '') => `<div class="tn ${cls}"><span class="dot ${st}"></span><span class="lbl"><b>${t}</b><span>${sub}</span></span><span class="m" style="color:var(--muted)">${ref}</span></div>`;
+  return `<div class="trace">
+    ${node('d', '报价', q ? `V${q.ver} · 毛利 ${q.margin}%` : '直接下单', q ? q.id : '—')}
+    ${node(c.block ? 'a' : 'd', 'PI 确认', `${cu.short} · ${c.cur} ${fmt(total(c), 2)}${c.block ? ' · 信用额度待审批' : ''}`, c.pi)}
+    ${pos.map(p => node(p.st === '已入库' ? 'd' : 'a', '采购', `${supOf(p.sup).name} · ${p.st}`, p.id, 'sub')).join('')}
+    ${wos.map(w => node(w.st === '已完工' ? 'd' : w.st === '欠料' ? 'w' : 'a', '工单', `${prodOf(w.item).inner} · ${fmt(w.done)} / ${fmt(w.qty)} · ${w.st}`, w.id, 'sub')).join('')}
+    ${wws.map(w => node('a', '委外贴片', `${supOf(w.sup).name} · 回货 ${w.back} / ${w.qty}`, w.id, 'sub')).join('')}
+    ${node(sh ? 'd' : 'w', '出库与出运', sh ? `${sh.mode} · ${sh.st}` : '未出运', sh ? sh.ck : '—')}
+    ${node(c.inv ? 'd' : 'w', '销售发票', c.inv ? '已开票' : '出运后自动开票', c.inv || '—')}
+    ${node(recv >= total(c) ? 'd' : recv > 0 ? 'a' : 'w', '收款与核销', `${c.cur} ${fmt(recv, 2)} / ${fmt(total(c), 2)}`, '')}
+    ${node(c.node >= 10 ? 'd' : 'w', '结汇', c.node >= 10 ? '已结汇' : '未结汇', '')}
+  </div><p class="note">所有节点都在本系统，单据之间自动连结，不需要手写备注对照。</p>`;
+}
+
+V.follow = () => {
+  const cols = [[2, '备料'], [3, '生产'], [4, '检验'], [5, '出库'], [6, '订舱'], [9, '收款']];
+  const list = DB.contracts;
+  return head('跟单看板', '每张 PI 按节点推进 · 红框为逾期 · 备料、生产、检验进度由单据自动更新') +
+    `<div class="kanban">${cols.map(([n, name]) => { const cs = list.filter(c => c.node === n); return `<div class="col"><h4><span>${name}</span><span>${cs.length}</span></h4>${cs.map(c => {
+      const w = DB.wos.filter(x => c.wo.includes(x.id)), d = w.reduce((a, x) => a + x.done, 0), q = w.reduce((a, x) => a + x.qty, 0);
+      const sh = DB.mrp.filter(m => m.for === c.pi && shortage(m) > 0);
+      return `<div class="kc ${c.late || sh.length ? 'late' : ''}"><div class="t">${c.pi}</div><div class="s">${custOf(c.cust).short} · ${c.cur} ${fmt(total(c))}</div>${q ? `<div class="s">工单 ${fmt(d)} / ${fmt(q)}</div>` : ''}<div class="f">${c.late ? `<span class="dn">逾期 ${c.late} 天</span>` : sh.length ? `<span class="dn">缺 ${sh.map(m => m.item).join('、')}</span>` : '<span class="s">正常</span>'}${goBtn('contract|' + c.pi, '打开')}</div></div>`;
+    }).join('') || '<p class="note" style="margin:4px">没有合同</p>'}</div>`; }).join('')}</div>`;
+};
+
+V.samples = () => {
+  const list = DB.samples.filter(s => S.sampleF === '全部' || s.st === S.sampleF);
+  const k = st => DB.samples.filter(s => s.st === st).length;
+  return head('样品与借出', '寄样就是库存借出，只录一次；到期提醒归还，测试通过直接转 PI', `<button class="btn pri" type="button" data-act="toast" data-msg="已登记寄样，审批后由仓库出库（演示）">${ic('plus')}登记寄样</button>`) + `
+  <div class="grid g4">
+    <div class="card kpi"><div class="k">测试中</div><div class="v">${k('测试中')}</div></div>
+    <div class="card kpi"><div class="k">逾期未还</div><div class="v dn">${k('逾期未还')}</div></div>
+    <div class="card kpi"><div class="k">待出库</div><div class="v">${k('待出库')}</div></div>
+    <div class="card kpi"><div class="k">近 90 天样品转订单率</div><div class="v">38%</div></div>
+  </div>
+  <div class="toolbar mt" style="margin-bottom:12px"><div class="filters">${['全部', '测试中', '逾期未还', '待出库', '已转订单'].map(f => `<button type="button" data-act="sampleF" data-id="${f}" aria-pressed="${S.sampleF === f}">${f}</button>`).join('')}</div></div>` +
+  table(['寄样单', '客户', '产品', '数量', '寄出', '应还', '状态', '说明', ''], list.map(s => [mono(s.id), custOf(s.cust).short, prodOf(s.prod).name, s.qty, s.out, s.due,
+    s.st === '逾期未还' ? pill(`逾期 ${daysPast(s.due)} 天`, 'bad') : s.st === '已转订单' ? pill('已转订单', 'ok') : s.st === '待出库' ? pill('待出库', 'mute') : pill('测试中', 'run'), `<span class="wrap">${s.note}</span>`,
+    s.st === '测试中' ? `<button class="btn sm pri" type="button" data-act="sampleWin" data-id="${s.id}">测试通过，转报价</button>` : s.st === '待出库' ? `<button class="btn sm" type="button" data-act="sampleOut" data-id="${s.id}">仓库出库</button>` : s.st === '逾期未还' ? `<button class="btn sm" type="button" data-act="toast" data-msg="已提醒客户归还（演示）">提醒归还</button>` : s.pi ? piBtn(s.pi) : '']), { num: [3] }) +
+  `<p class="note">出库时扣减成品库存并记入“样品费用”；客户买下时可直接把借出转成销售，不用先还再卖。</p>`;
+};
+
+V.ship = () => {
+  const s = DB.ships.find(x => x.id === S.shipSel) || DB.ships[0];
+  const w = s.items.map(i => i[2] * prodOf(i[1]).kg), tw = w.reduce((a, b) => a + b, 0);
+  const cc = custOf((scOf(s.items[0][0]) || {}).cust).cc;
+  const comp = { VN: [['产地证', 'Form E（中国—东盟）', 1], ['越文标签', '已附越文品名', 1]], TH: [['产地证', 'RCEP 原产地证书', 1]], MX: [['西班牙语品名', '商业发票已附西语品名', 1], ['原产地声明', '一般贸易，附原产地声明即可', 0], ['进口商 RFC', '客户税号已登记', 1]] }[cc] || [];
+  const nDoc = Object.values(s.docs).filter(Boolean).length;
+  return head('出运与单证', '建立出运时自动产生出库单与销售发票；单证一次生成并存档') + flow([['选 PI 与数量', 1], ['自动出库', 1], ['生成单证', nDoc === 5], ['自动开发票', !!(scOf(s.items[0][0]) || {}).inv], ['应收入账', !!(scOf(s.items[0][0]) || {}).inv]]) +
+  table(['出运', '方式', '路线', '出发', 'PI', '出库单', '单证', '状态'], DB.ships.map(x => [mono(x.id), x.mode, x.route, x.etd, [...new Set(x.items.map(i => i[0]))].join('、'), mono(x.ck), `${Object.values(x.docs).filter(Boolean).length}/5`, pill(x.st, x.st.includes('待') ? 'run' : 'ok')]), { click: i => `data-act="shipSel" data-id="${DB.ships[i].id}"`, sel: i => DB.ships[i].id === s.id }) + `
+  <div class="grid g2 mt">
+    <div class="card"><h3>${s.id} 货物与运费 <small>${s.mode} · 毛重约 ${fmt(tw, 1)} kg</small></h3>${table(['PI', '品项', '数量', '重量 kg', '分摊运费 USD'], [...s.items.map((i, k) => [piBtn(i[0]), prodOf(i[1]).name, fmt(i[2]), fmt(w[k], 1), fmt(s.freight * w[k] / tw, 2)]), ['<b>合计</b>', '', '', `<b>${fmt(tw, 1)}</b>`, `<b>${fmt(s.freight, 2)}</b>`]], { num: [2, 3, 4] })}<p class="note">运费按重量分摊到每张 PI，并自动产生对物流商的应付。</p></div>
+    <div class="card"><h3>单证 <small>${nDoc}/5 已生成</small></h3>${table(['单证', '状态'], Object.entries(s.docs).map(([k, v]) => [k, v ? pill('已生成', 'ok') : pill('未生成', 'mute')]))}
+      <div class="toolbar" style="margin-top:12px"><button class="btn pri" type="button" data-act="genDocs" data-id="${s.id}" ${nDoc === 5 ? 'disabled' : ''}>一键生成单证并开发票</button>${goBtn('window', '导出单一窗口资料')}</div></div>
+  </div>
+  <div class="card mt"><h3>国别合规</h3>${table(['检查项', '说明', '结果'], comp.map(r => [r[0], `<span class="wrap">${r[1]}</span>`, r[2] ? pill('通过', 'ok') : pill('待补', 'warn')]))}</div>`;
+};
+
+V.after = () => head('售后与返修', '反查原 PI；退货经入库检验后自动冲销应收，不用另开销退单', `<button class="btn pri" type="button" data-act="toast" data-msg="已登记售后单（演示）">${ic('plus')}登记售后</button>`) +
+  table(['售后单', '原 PI', '客户', '产品', '数量', '类型', '原因', '进度', ''], DB.after.map(a => [mono(a.id), mono(a.pi), custOf(a.cust).short, prodOf(a.prod).name, a.qty, a.kind === '退货' ? pill('退货', 'warn') : pill('返修', 'run'), `<span class="wrap">${a.reason}</span>`, `${a.steps[a.step]}（${a.step + 1}/${a.steps.length}）`, a.step < a.steps.length - 1 ? `<button class="btn sm" type="button" data-act="afterNext" data-id="${a.id}">下一步</button>` : pill('已完成', 'ok')]), { num: [4] }) + `
+  <div class="grid g2 mt">${DB.after.map(a => `<div class="card"><h3>${a.id} · ${a.kind} <small>${custOf(a.cust).short}</small></h3>${stepper(a.steps, a.step)}</div>`).join('')}</div>`;
+
+V.comm = () => {
+  const fxr = curLock()[1];
+  const rows = ['林晓', '陈一凡', '周可'].map(n => {
+    const cs = DB.contracts.filter(c => c.sales === n);
+    const rev = cs.reduce((a, c) => a + total(c) * (c.cur === 'USD' ? fxr : 1), 0), gp = cs.reduce((a, c) => a + (c.act ?? c.est), 0);
+    const got = cs.reduce((a, c) => a + c.pay.filter(p => p[3] === '已收').reduce((x, p) => x + p[1], 0) * (c.cur === 'USD' ? fxr : 1), 0);
+    const ratio = S.perfCash ? got / Math.max(1, rev) : 1, base = S.perfRule === 'gp' ? gp : rev, rate = S.perfRule === 'gp' ? .12 : .008;
+    return [n, cs.length, '¥' + fmt(rev), '¥' + fmt(gp), fmt(ratio * 100, 0) + '%', '¥' + fmt(base * rate * ratio)];
+  });
+  return head('业绩与提成', '合同记录“归属业务”，与录单人分开；毛利用本系统算出的实际成本') + `
+  <div class="grid g23">
+    <div class="card"><h3>提成规则</h3><div style="display:grid;gap:10px">
+      <label class="chk"><input type="radio" name="pr" ${S.perfRule === 'gp' ? 'checked' : ''} data-act="perfRule" data-id="gp"> 按毛利的 12%</label>
+      <label class="chk"><input type="radio" name="pr" ${S.perfRule === 'rev' ? 'checked' : ''} data-act="perfRule" data-id="rev"> 按销售额的 0.8%</label>
+      <label class="chk"><input type="checkbox" ${S.perfCash ? 'checked' : ''} data-act="perfCash"> 以回款为准</label>
+    </div></div>
+    <div class="card"><h3>本月业绩与提成试算</h3>${table(['归属业务', '合同数', '销售额', '毛利', '回款比例', '提成'], rows, { num: [1, 2, 3, 4, 5] })}</div>
+  </div>`;
+};
+</script>
+<script>
+/* ================= 采购 ================= */
+V.mrp = () => {
+  const pr = DB.prs[0];
+  return head('物料需求与请购', '系统依合同、BOM、库存、在途自动算缺料；请购单上直接比价，选定后产生采购单') + flow([['合同确认', 1], ['展开 BOM', 1], ['扣库存与在途', 1], ['算出缺料', 1], ['请购比价', !!pr], ['产生采购单', pr && pr.st === '已转采购']]) + `
+  <div class="card"><h3>物料需求 <small>需求 + 安全量 − 库存 − 在途 = 缺料</small></h3>${table(['料件', '名称', '需求', '安全量', '库存', '在途', '缺料', '用于', ''], DB.mrp.map(m => { const s = shortage(m); return [mono(m.item), nameOf(m.item), fmt(m.need), fmt(m.safe), fmt(m.stock), fmt(m.onway), s ? `<b class="dn">${fmt(s)}</b>` : pill('足够', 'ok'), m.for.startsWith('PI') || m.for.startsWith('HT') ? piBtn(m.for) : m.for, s ? (m.pr ? pill('已请购 ' + m.pr, 'run') : `<button class="btn sm pri" type="button" data-act="makePR" data-id="${m.item}">产生请购</button>`) : '']; }), { num: [2, 3, 4, 5, 6] })}
+  <p class="note">合同变更、工单变更后会自动重算。易助的请购、BOM 自动请购、询价、核价、采购底稿，都合并在这一页完成。</p></div>
+  ${DB.prs.map(p => `<div class="card mt"><h3>请购单 ${mono(p.id)} <small>${nameOf(p.item)} · ${fmt(p.qty)} 只 · 需求日 ${p.need} · 来源 ${p.src}</small>${p.st === '已转采购' ? pill('已转采购 ' + p.po, 'ok') : pill(p.st, 'warn')}</h3>
+    ${table(['供应商', '含税单价 ¥', '交期（天）', '准时率', '合格率', '金额 ¥', ''], p.offers.map(o => { const s = supOf(o[0]); const best = o[1] === Math.min(...p.offers.map(x => x[1])); return [s.name + (best ? ' ' + pill('最低价', 'ok') : ''), fmt(o[1], 2), o[2], s.ontime + '%', s.qual + '%', fmt(o[1] * p.qty, 2), p.st !== '已转采购' ? `<button class="btn sm ${best ? 'pri' : ''}" type="button" data-act="pickOffer" data-id="${p.id}|${o[0]}">选定并下单</button>` : '']; }), { num: [1, 2, 5] })}
+    <p class="note">供应商价格读自供应商价格表；可加询价，报价回来后在这里比较。</p></div>`).join('')}`;
+};
+
+V.po = () => head('采购单', '金额超过 ¥30,000 需采购主管审批；到货后进入“收货与检验”') +
+  table(['采购单', '供应商', '明细', '金额 ¥', '交期', '到货', '用于', '状态'], DB.pos.map(p => { const amt = p.lines.reduce((a, l) => a + l[1] * l[2], 0), q = p.lines.reduce((a, l) => a + l[1], 0); return [mono(p.id), supOf(p.sup).name, `<span class="wrap">${p.lines.map(l => `${nameOf(l[0])} × ${fmt(l[1])}`).join('<br>')}</span>`, fmt(amt, 2), p.due, `${fmt(p.recv)} / ${fmt(q / p.lines.length)}`, p.for.startsWith('PI') || p.for.startsWith('HT') ? piBtn(p.for) : p.for, p.st === '待审批' ? pill('待审批', 'warn') : p.st === '已入库' ? pill('已入库', 'ok') : p.st === '已到货待检' ? goBtn('inbound', '已到货 · 去检验') : pill(p.st, 'run')]; }), { num: [3] }) + `
+  <div class="grid g2 mt">
+    <div class="card"><h3>采购变更</h3>${table(['变更单', '采购单', '内容', '状态'], [[mono('CB2026111401'), mono('PO2026111001'), '交期 11-18 改 11-20（供应商排产）', pill('已生效', 'ok')]])}<p class="note">交期变更会自动通知跟单，并重算受影响合同的预计出货日。</p></div>
+    <div class="card"><h3>本月采购概况</h3><div class="res"><div><span>采购金额</span><span class="m">¥${fmt(186420)}</span></div><div><span>准时到货率</span><span class="m">91%</span></div><div><span>来料合格率</span><span class="m">99.2%</span></div><div><span>未到货采购单</span><span class="m">2 张</span></div></div></div>
+  </div>`;
+
+V.suppliers = () => head('供应商', '供应商资料、价格表、交货与品质评分在同一页', `<button class="btn pri" type="button" data-act="toast" data-msg="已新增供应商（演示）">${ic('plus')}新增供应商</button>`) +
+  table(['编号', '供应商', '供应品类', '付款条件', '准时率', '来料合格率', '未付金额 ¥'], DB.suppliers.map(s => [mono(s.id), `<b>${s.name}</b>`, s.cat, s.terms, s.ontime < 90 ? pill(s.ontime + '%', 'warn') : s.ontime + '%', s.qual + '%', s.open ? fmt(s.open, 2) : '—']), { num: [4, 5, 6] }) + `
+  <div class="card mt"><h3>价格表 <small>比价时自动带出</small></h3>${table(['料件', '供应商', '含税单价 ¥', '最小订量', '更新日期'], [['VCSEL-25G', '光芯电子', '26.00', '500', '11-02'], ['VCSEL-25G', '立信电子', '27.50', '200', '10-20'], ['TOSA-LR4', '华晶光电', '238.00', '50', '09-15'], ['SHELL-QS28', '精密五金', '12.50', '500', '08-01']].map(r => [mono(r[0]), r[1], r[2], r[3], r[4]]), { num: [2, 3] })}</div>`;
+
+/* ================= 仓库与品质 ================= */
+V.inbound = () => {
+  const pend = DB.inbound.filter(x => x.st === '待检验'), done = DB.inbound.filter(x => x.st !== '待检验');
+  const rows = list => list.map(x => [mono(x.id), x.src === '采购到货' ? pill(x.src, 'run') : x.src === '委外回货' ? pill(x.src, 'yz') : pill(x.src, 'ok'), x.ref.startsWith('PO') ? goBtn('po', x.ref) : x.ref.startsWith('WW') ? goBtn('ww', x.ref) : goBtn('mo', x.ref), x.who, `${mono(x.item)} ${nameOf(x.item)}`, fmt(x.qty),
+    x.st === '待检验' ? `<div class="toolbar"><button class="btn sm pri" type="button" data-act="qcPass" data-id="${x.id}">合格入库</button><button class="btn sm dng" type="button" data-act="qcFail" data-id="${x.id}">验退</button></div>` : x.st === '已入库' ? pill('已入库', 'ok') : pill(x.st, 'bad')]);
+  return head('收货与检验', '采购到货、委外回货、工单完工都在同一个队列检验；合格自动入库并产生应付暂估或完工成本') + flow([['到货或完工', 1], ['检验', 1], ['合格入库', 1], ['应付暂估／完工成本', 1]]) + `
+  <div class="grid g4"><div class="card kpi"><div class="k">待检验</div><div class="v">${pend.length}</div></div><div class="card kpi"><div class="k">本月来料合格率</div><div class="v">99.2%</div></div><div class="card kpi"><div class="k">本月验退</div><div class="v">1 批</div></div><div class="card kpi"><div class="k">平均检验时间</div><div class="v">0.6 天</div></div></div>
+  <div class="card mt"><h3>待检验 <small>${pend.length} 笔</small></h3>${pend.length ? table(['收货单', '来源', '来源单据', '供应商／部门', '品项', '数量', ''], rows(pend), { num: [5] }) : '<p class="note">目前没有待检验的收货。</p>'}</div>
+  <div class="card mt"><h3>已处理</h3>${table(['收货单', '来源', '来源单据', '供应商／部门', '品项', '数量', '结果'], rows(done), { num: [5] })}<p class="note">易助的进货单、收料单、进货检验、委外检验、生产入库检验、验退，都合并在这一页。</p></div>`;
+};
+
+V.stock = () => {
+  const tabs = [['stock', '库存'], ['moves', '出入库记录'], ['dead', '呆滞与 ABC']];
+  const T = {
+    stock: () => table(['品号', '名称', '仓库', '现有', '已分配', '可用', '单位成本 ¥', '金额 ¥'], DB.stock.map(r => [mono(r[0]), nameOf(r[0]), r[1], fmt(r[2]), fmt(r[3]), r[2] - r[3] <= 0 && r[2] ? pill('0', 'warn') : fmt(r[2] - r[3]), fmt(r[4], 2), fmt(r[2] * r[4], 2)]), { num: [3, 4, 5, 6, 7] }) + `<div class="toolbar" style="margin-top:12px"><button class="btn" type="button" data-act="toast" data-msg="已建立调拨单（演示）">调拨</button><button class="btn" type="button" data-act="toast" data-msg="已建立盘点单，盘点期间冻结出入库（演示）">盘点</button><button class="btn" type="button" data-act="toast" data-msg="已建立其他出库单（演示）">其他出入库</button><button class="btn" type="button" data-act="toast" data-msg="已建立组合单（演示）">组合与拆解</button></div><p class="note">单位成本为月加权平均；“已分配”是已被合同或工单占用的数量。</p>`,
+    moves: () => `<div class="toolbar" style="margin-bottom:12px"><div class="filters">${['全部', '采购入库', '生产领料', '完工入库', '委外送料', '委外回货入库', '销售出库', '样品借出', '调拨', '盘点调整'].map(f => `<button type="button" data-act="moveF" data-id="${f}" aria-pressed="${S.moveF === f}">${f}</button>`).join('')}</div></div>` +
+      table(['日期', '类型', '来源单据', '品号', '数量', '仓库'], DB.moves.filter(m => S.moveF === '全部' || m[1] === S.moveF).map(m => [m[0], m[1], mono(m[2]), `${mono(m[3])} ${nameOf(m[3])}`, `<span class="${m[4] < 0 ? 'dn' : 'up'}">${m[4] > 0 ? '+' : ''}${fmt(m[4])}</span>`, m[5]]), { num: [4] }) + `<p class="note">每笔异动都由来源单据自动产生，不需要另外开出入库单。</p>`,
+    dead: () => table(['品号', '名称', '库存', '金额 ¥', '最近异动', '呆滞天数', 'ABC'], [['C91SPCW55-40', '1.25G CWDM 40km', 1240, 33604, '11-05', 13, 'C'], ['SHELL-SFP', 'SFP 外壳', 5200, 11440, '11-10', 8, 'C'], ['91GPON-OLD', 'GPON C+（旧版外壳）', 380, 22800, '05-14', 188, 'B']].map(r => [mono(r[0]), r[1], fmt(r[2]), fmt(r[3]), r[4], r[5] > 90 ? pill(r[5] + ' 天', 'bad') : r[5] + ' 天', r[6]]), { num: [2, 3, 5] }) + '<p class="note">超过 90 天未异动列为呆滞，提醒业务优先促销或改用。</p>'
+  };
+  return head('库存', '库存、批号、出入库记录与呆滞分析') + `<div class="card"><div class="tabs" role="tablist">${tabs.map(([k, n]) => `<button type="button" role="tab" aria-selected="${S.stockTab === k}" data-act="stockTab" data-id="${k}">${n}</button>`).join('')}</div>${T[S.stockTab]()}</div>`;
+};
+
+/* ================= 生产 ================= */
+V.mo = () => head('工单', '合同确认后自动产生工单建议；按 BOM 一键领料，完工进入成品检验') + flow([['合同确认', 1], ['工单建议', 1], ['齐套检查', 1], ['领料', 1], ['生产', 1], ['完工检验入库', 1]]) +
+  table(['工单', 'PI', '产品（内部品号）', '数量', '已完工', '预计完工', '齐套', '状态', ''], DB.wos.map(w => { const sh = DB.mrp.filter(m => m.for === w.pi && shortage(m) > 0 && (DB.boms[w.item] || []).some(b => b[0] === m.item)); return [mono(w.id), piBtn(w.pi), `${mono(prodOf(w.item).inner)} ${prodOf(w.item).name}`, fmt(w.qty), fmt(w.done), w.due, sh.length ? pill('缺 ' + sh.map(m => m.item).join('、'), 'bad') : pill('齐套', 'ok'),
+    w.st === '已完工' ? pill('已完工', 'ok') : w.st === '欠料' ? pill('欠料', 'bad') : w.st === '待领料' ? pill('待领料', 'mute') : pill(`生产中 ${Math.round(w.done / w.qty * 100)}%`, 'run'),
+    w.st === '待领料' ? `<button class="btn sm pri" type="button" data-act="issue" data-id="${w.id}">按 BOM 领料</button>` : w.st === '生产中' ? `<button class="btn sm" type="button" data-act="report" data-id="${w.id}">报完工 50 只</button>` : '']; }), { num: [3, 4] }) + `
+  <div class="grid g2 mt">
+    <div class="card"><h3>领料明细 <small>WO2026111602 · 按 BOM 计算</small></h3>${table(['料件', '单位用量', '应领', '库存', '结果'], DB.boms['C91SP10LR-D1'].map(b => { const s = DB.stock.find(r => r[0] === b[0]) || [0, 0, 0]; const need = b[1] * 1500; return [`${mono(b[0])} ${nameOf(b[0])}`, b[1], fmt(need), fmt(s[2]), s[2] >= need ? pill('足够', 'ok') : pill('不足', 'bad')]; }), { num: [1, 2, 3] })}<p class="note">超领要填原因并审批；退料回到原仓位。</p></div>
+    <div class="card"><h3>本月生产概况</h3><div class="res"><div><span>完工数量</span><span class="m">${fmt(3090)} 只</span></div><div><span>按期完工率</span><span class="m">88%</span></div><div><span>平均良率</span><span class="m">98.4%</span></div><div><span>欠料工单</span><span class="m">1 张</span></div></div></div>
+  </div>`;
+
+V.ww = () => head('委外加工', 'PCBA 外协贴片：送料、回货、检验、加工费一页管到底') + flow([['委外单', 1], ['送料到外协仓', 1], ['外协加工', 1], ['回货检验', 1], ['加工费入应付', 1]]) +
+  table(['委外单', '工单', '外协厂', '主件', '数量', '已送料', '已回货', '加工费 ¥／套', '预计回货', ''], DB.wws.map(w => [mono(w.id), goBtn('mo', w.wo), supOf(w.sup).name, `${mono(w.item)} ${nameOf(w.item)}`, w.qty, w.sent, w.back, fmt(w.price, 2), w.due, w.back < w.qty ? `<button class="btn sm" type="button" data-act="wwBack" data-id="${w.id}">登记回货 ${w.qty - w.back} 套</button>` : pill('已回齐', 'ok')]), { num: [4, 5, 6, 7] }) + `
+  <div class="grid g2 mt">
+    <div class="card"><h3>外协厂手上的料 <small>外协厂甲（委外仓）</small></h3>${table(['料件', '已送', '已耗用', '结余'], [['IC-DRV100 100G 驱动芯片', 220, 100, 120], ['PCB-QS100 PCB 板', 225, 102, 123]], { num: [1, 2, 3] })}<p class="note">送料时从原材料仓转到外协厂的委外仓，回货时按 BOM 扣除，月底对账。</p></div>
+    <div class="card"><h3>为什么合成一页</h3><p class="note" style="margin-top:0">易助的委外单、委外变更、送料、超耗送料、超送、退料、进货、退货、委外明细，共 9 种单据。这里以委外单为主线，送料与回货都在同一行操作，加工费在回货检验后自动产生应付。</p></div>
+  </div>`;
+
+V.bom = () => {
+  const code = 'C91QS100LR4-A2', p = prodOf(code), parts = DB.boms[code], cost = parts.reduce((a, b) => a + b[1] * DB.mats[b[0]][2], 0);
+  return head('产品与 BOM', '产品主档、客户品号、BOM、替代料与变更记录') + `
+  <div class="card"><h3>产品</h3>${table(['客户品号', '内部品号', '品名', '海关编码', '退税率', '月加权平均成本 ¥'], DB.products.map(x => [mono(x.code), mono(x.inner), x.name, mono(x.hs), x.rebate + '%', fmt((DB.stock.find(r => r[0] === x.code) || [0, 0, 0, 0, x.cost])[4], 2)]), { num: [4, 5] })}<p class="note">客户品号（C91 开头）用于报价、合同与单证；内部品号（91 开头）用于生产。一个内部品号可以对应多个客户品号（例如中性包装版）。</p></div>
+  <div class="grid g2 mt">
+    <div class="card"><h3>${p.name} 的 BOM <small>${code} → ${p.inner} · V3</small></h3>${table(['子件', '名称', '用量', '单价 ¥', '小计 ¥', '来源'], parts.map(b => [mono(b[0]), nameOf(b[0]), b[1], fmt(DB.mats[b[0]][2], 2), fmt(b[1] * DB.mats[b[0]][2], 2), b[2]]), { num: [2, 3, 4] })}<p class="note">材料成本 ¥${fmt(cost, 2)}／只，自动带入报价试算。</p></div>
+    <div class="card"><h3>替代料与变更记录</h3>${table(['主料', '替代料', '条件'], [['TOSA-LR4（华晶光电）', 'TOSA-LR4B（光芯电子）', '主料缺料时，需工程确认']])}<h3 class="mt">变更记录</h3>${table(['版本', '日期', '内容', '人员'], DB.bomHist.map(h => [h[0], h[1], `<span class="wrap">${h[2]}</span>`, h[3]]))}</div>
+  </div>`;
+};
+
+/* ================= 财务 ================= */
+V.ar = () => {
+  const tabs = [['claim', '到账认领'], ['inv', '销售发票'], ['aging', '账龄与跟催']];
+  const lk = curLock()[1];
+  const r = DB.receipts.find(x => x.id === S.recSel) || DB.receipts[0];
+  const cands = DB.contracts.flatMap(c => c.pay.map((p, i) => ({ c, p, i }))).filter(x => x.c.cur === r.cur && x.p[3] !== '已收');
+  const best = cands.find(x => custOf(x.c.cust).name.toUpperCase() === r.payer) || cands.find(x => Math.abs(x.p[1] - r.amt) < 1);
+  const mismatch = best && custOf(best.c.cust).name.toUpperCase() !== r.payer;
+  const all = arOpen(), sum = all.reduce((a, x) => a + x.amt - x.got, 0);
+  const by = BUCKETS.map(([b, col]) => [b, col, all.filter(x => agingBucket(daysPast(x.due)) === b).reduce((a, x) => a + x.amt - x.got, 0)]);
+  const T = {
+    claim: () => `<div class="grid g2"><div>${table(['流水', '日期', '付款人', '金额', '状态'], DB.receipts.map(x => [mono(x.id), x.date, `<span class="wrap">${x.payer}</span>`, `${x.cur} ${fmt(x.amt, 2)}`, x.claimed ? pill('已认领', 'ok') : pill('待认领', 'warn')]), { num: [3], click: i => `data-act="recSel" data-id="${DB.receipts[i].id}"`, sel: i => DB.receipts[i].id === r.id })}</div>
+      <div class="card" style="background:var(--card2)"><h3>认领 ${mono(r.id)}</h3>${r.claimed ? `<div class="banner ok"><b>已认领</b><span>${r.claimed}<br>记账汇率 ${r.rate.toFixed(4)}，折合 ¥${fmt(r.amt * r.rate, 2)}<br>已核销发票并产生凭证</span></div>` : best ? `
+        <div class="kv"><div><span>付款人</span>${r.payer}</div><div><span>金额</span>${r.cur} ${fmt(r.amt, 2)}</div><div><span>建议对应</span>${best.c.pi} · ${best.p[0]}</div><div><span>合同买方</span>${custOf(best.c.cust).name}</div><div><span>记账汇率</span>${lk.toFixed(4)}</div><div><span>折合人民币</span>¥${fmt(r.amt * lk, 2)}</div></div>
+        ${mismatch ? `<div class="banner warn mt"><b>付款人与买方不一致</b><span>第三方代付要留存客户的付款委托书，否则可能影响出口退税。</span></div><label class="chk"><input type="checkbox" id="ackPayer"> 已取得客户付款委托书</label>` : '<div class="banner ok mt"><b>付款人与买方一致</b><span>可以直接认领。</span></div>'}
+        <div class="toolbar" style="margin-top:12px"><button class="btn pri" type="button" data-act="claim" data-id="${best.c.pi}|${best.i}">认领并核销</button></div>` : '<p class="note">没有找到可对应的未收款项。</p>'}
+        <p class="note">认领＝收款＋核销＋凭证一次完成，不再分收款单与核销单。</p></div></div>`,
+    inv: () => table(['发票', 'PI', '客户', '金额', '已收', '到期', '金税'], DB.ar.map(x => [mono(x.inv), mono(x.pi), custOf(x.cust).short, `${x.cur} ${fmt(x.amt, 2)}`, fmt(x.got, 2), x.due, pill('已上传', 'ok')]), { num: [3, 4] }) + `<p class="note">外销发票在出运生成单证时自动产生；内销发票可经金税接口导出开具，红字发票在退货流程中产生。</p>`,
+    aging: () => `<div class="aging">${by.map(([b, col, v]) => v ? `<i style="width:${v / sum * 100}%;background:${col}" title="${b}"></i>` : '').join('')}</div><div class="legend">${by.map(([b, col, v]) => `<span><i style="background:${col}"></i>${b} · USD ${fmt(v)}</span>`).join('')}</div>
+      <div class="mt">${table(['发票', 'PI', '客户', '负责业务', '到期', '未收', '账龄', '最近跟催', ''], all.map(x => { const d = daysPast(x.due); return [mono(x.inv), mono(x.pi), custOf(x.cust).short, custOf(x.cust).sales, x.due, `${x.cur} ${fmt(x.amt - x.got, 2)}`, d > 0 ? pill(`逾期 ${d} 天`, d > 90 ? 'bad' : 'warn') : pill('未到期', 'mute'), x.log[0] ? `<span class="wrap">${x.log[0][0]} ${x.log[0][2]}</span>` : '<span class="dn">尚未跟催</span>', d > 0 ? `<button class="btn sm" type="button" data-act="dun" data-id="${x.inv}">记录跟催</button>` : '']; }), { num: [5] })}</div>`
+  };
+  return head('应收与收款', '发票、到账认领、核销、账龄跟催都在这里') + `
+  <div class="grid g4"><div class="card kpi"><div class="k">未收合计</div><div class="v">USD ${fmt(sum)}</div></div><div class="card kpi"><div class="k">逾期金额</div><div class="v dn">USD ${fmt(overdueAmt())}</div></div><div class="card kpi"><div class="k">逾期 90 天以上</div><div class="v dn">USD ${fmt(by[4][2] + by[5][2])}</div></div><div class="card kpi"><div class="k">待认领到账</div><div class="v">${DB.receipts.filter(x => !x.claimed).length} 笔</div></div></div>
+  <div class="card mt"><div class="tabs" role="tablist">${tabs.map(([k, n]) => `<button type="button" role="tab" aria-selected="${S.arTab === k}" data-act="arTab" data-id="${k}">${n}</button>`).join('')}</div>${T[S.arTab]()}</div>`;
+};
+
+V.ap = () => {
+  const tabs = [['inv', '采购发票与匹配'], ['pay', '付款计划']];
+  const T = {
+    inv: () => table(['发票', '供应商', '对应单据', '金额 ¥', '税额 ¥', '匹配', '到期', ''], DB.ap.map(x => [mono(x.id), supOf(x.sup).name, `<span class="wrap">${x.ref}</span>`, fmt(x.amt, 2), fmt(x.tax, 2), x.match === '单价不一致' ? pill(x.match, 'bad') : pill(x.match, 'ok'), x.due, x.st === '待核对' ? `<button class="btn sm" type="button" data-act="apFix" data-id="${x.id}">请供应商更正</button>` : '']), { num: [3, 4] }) +
+      (DB.ap.find(x => x.diff) ? `<div class="banner warn mt"><b>单价不一致</b><span>${DB.ap.find(x => x.diff).diff}。取代易助的“采购价差异常表”，发票登记时就提示。</span></div>` : '') + `<p class="note">三单匹配：采购单、入库数量、供应商发票三者一致才能排付款。</p>`,
+    pay: () => table(['到期', '供应商', '发票', '金额 ¥', '状态', ''], DB.ap.filter(x => x.st !== '待核对').sort((a, b) => md(a.due) - md(b.due)).map(x => [x.due, supOf(x.sup).name, mono(x.id), fmt(x.amt, 2), x.paid ? pill('已付款', 'ok') : x.st === '本周到期' ? pill('本周到期', 'warn') : pill('待付款', 'mute'), x.paid ? '' : `<button class="btn sm pri" type="button" data-act="pay" data-id="${x.id}">送审付款</button>`]), { num: [3] }) + `<p class="note">付款超过 ¥30,000 需总经理审批；付款后自动核销发票并产生凭证。</p>`
+  };
+  const open = DB.ap.filter(x => !x.paid).reduce((a, x) => a + x.amt, 0);
+  return head('应付与付款', '采购发票、三单匹配、付款计划与核销') + `
+  <div class="grid g4"><div class="card kpi"><div class="k">未付合计</div><div class="v">¥${fmt(open)}</div></div><div class="card kpi"><div class="k">本周到期</div><div class="v dn">¥${fmt(DB.ap.filter(x => x.st === '本周到期' && !x.paid).reduce((a, x) => a + x.amt, 0))}</div></div><div class="card kpi"><div class="k">待核对发票</div><div class="v">${DB.ap.filter(x => x.st === '待核对').length}</div></div><div class="card kpi"><div class="k">本月已付</div><div class="v">¥${fmt(DB.ap.filter(x => x.paid).reduce((a, x) => a + x.amt, 0) + 128600)}</div></div></div>
+  <div class="card mt"><div class="tabs" role="tablist">${tabs.map(([k, n]) => `<button type="button" role="tab" aria-selected="${S.apTab === k}" data-act="apTab" data-id="${k}">${n}</button>`).join('')}</div>${T[S.apTab]()}</div>`;
+};
+
+V.fx = () => {
+  const lk = curLock(), d = DB.fx.daily, last = d[d.length - 1], u = DB.fx.unsettled;
+  const W = 520, H = 150, mn = Math.min(...d.map(x => x[1]), lk[1]) - .003, mx = Math.max(...d.map(x => x[1]), lk[1]) + .003;
+  const X = i => 40 + i * (W - 60) / (d.length - 1), Y = v => 14 + (mx - v) / (mx - mn) * (H - 34);
+  const line = d.map((x, i) => `${X(i).toFixed(1)},${Y(x[1]).toFixed(1)}`).join(' ');
+  const reval = u * (last[1] - lk[1]);
+  return head('汇率与结汇', '月初锁定记账汇率 → 收款按锁定汇率入账 → 结汇记实际汇差 → 月末自动调汇') + `
+  <div class="grid g4">
+    <div class="card kpi"><div class="k">本月锁定汇率</div><div class="v">${lk[1].toFixed(4)}</div><div class="d">${lk[2]} · ${lk[3]}</div></div>
+    <div class="card kpi"><div class="k">今日参考汇率</div><div class="v">${last[1].toFixed(4)}</div><div class="d ${last[1] > lk[1] ? 'up' : 'dn'}">比锁定 ${last[1] > lk[1] ? '+' : ''}${fmt((last[1] - lk[1]) / lk[1] * 100, 2)}%</div></div>
+    <div class="card kpi"><div class="k">未结汇美元</div><div class="v">USD ${fmt(u)}</div></div>
+    <div class="card kpi"><div class="k">月末调汇预估</div><div class="v ${reval >= 0 ? 'up' : 'dn'}">${reval >= 0 ? '+' : '−'}¥${fmt(Math.abs(reval), 2)}</div><div class="d">按今日汇率重估美元户</div></div>
+  </div>
+  <div class="grid g2 mt">
+    <div class="card"><h3>参考汇率走势 <small>虚线为本月锁定汇率</small></h3><svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="近一周美元兑人民币参考汇率从 7.1395 升到 7.1503" style="width:100%;height:auto">
+      <line x1="40" x2="${W - 20}" y1="${Y(lk[1]).toFixed(1)}" y2="${Y(lk[1]).toFixed(1)}" stroke="var(--yz)" stroke-dasharray="4 4"/><text x="${W - 20}" y="${(Y(lk[1]) - 5).toFixed(1)}" text-anchor="end" style="fill:var(--yz)">锁定 ${lk[1].toFixed(4)}</text>
+      <polyline points="${line}" fill="none" stroke="var(--accent)" stroke-width="2"/>${d.map((x, i) => `<circle cx="${X(i).toFixed(1)}" cy="${Y(x[1]).toFixed(1)}" r="3" fill="var(--accent)"/><text x="${X(i).toFixed(1)}" y="${H - 4}" text-anchor="middle">${x[0]}</text>`).join('')}</svg></div>
+    <div class="card"><h3>登记结汇</h3><div class="form">
+      <label for="fx-amt">结汇金额（USD）<input id="fx-amt" type="number" value="${u}" min="0" step="100"></label>
+      <label for="fx-rate">银行结汇汇率<input id="fx-rate" type="number" value="${last[1].toFixed(4)}" step="0.0001"></label>
+    </div><div class="toolbar" style="margin-top:12px"><button class="btn pri" type="button" data-act="settle" ${u ? '' : 'disabled'}>登记结汇</button><button class="btn" type="button" data-act="toast" data-msg="已登记远期锁汇 USD 50,000 @ 7.1200（演示）">登记远期锁汇</button></div><p class="note">结汇与调汇都自动产生凭证，汇差计入“财务费用-汇兑损益”，并带回对应 PI 的利润。</p></div>
+  </div>
+  <div class="card mt"><h3>每月锁定记录</h3>${table(['月份', '汇率', '锁定人', '时间'], DB.fx.locks.map(l => [l[0], l[1].toFixed(4), l[2], l[3]]), { num: [1] })}<p class="note">每月 1 日 9:00 提醒财务锁定；超过 3 天未锁定，工作台会标红。</p></div>`;
+};
+
+V.rebate = () => head('出口退税', '专票与报关单配对，申报前先检查品名、规格是否一致') + `
+  <div class="banner own"><b>申报期限</b><span>须在报关出口之日次月起至次年 4 月 30 日前申报，系统对每张报关单倒数提醒。</span></div>` +
+  table(['报关单号', 'PI', '进项发票', '一致性', '可退税额 ¥', '状态'], DB.rebates.map(r => [mono(r.cd), mono(r.pi), r.inv, r.match === '一致' ? pill('一致', 'ok') : r.match === '—' ? '—' : pill(r.match, 'warn'), r.amt ? fmt(r.amt) : '—', r.st === '可申报' ? pill('可申报', 'ok') : r.st === '待更正' ? pill('待更正', 'warn') : pill(r.st, 'mute')]), { num: [4] }) + `
+  <p class="note">进项专票来自“应付与付款”的采购发票，报关单来自“出运与单证”，不用重复录入。</p>`;
+
+V.cost = () => {
+  const tabs = [['pi', '单票利润'], ['month', '月成本计算'], ['wo', '工单与委外成本']];
+  const c = scOf('PI20261021SGF');
+  const rows = [['收入（折人民币）', 177151, 176948], ['生产成本', -152000, -152760], ['运费与杂费', -4300, -4428], ['退税', 17489, 17489], ['佣金', -3540, -3540]];
+  const est = rows.reduce((a, r) => a + r[1], 0), act = rows.reduce((a, r) => a + r[2], 0);
+  const diffs = rows.map(r => [r[0], r[2] - r[1]]).filter(d => d[1]), maxAbs = Math.max(...diffs.map(d => Math.abs(d[1])));
+  const W = 520, mid = 300;
+  const bars = diffs.map(([n, d], i) => { const w = Math.abs(d) / maxAbs * 180, y = 14 + i * 40, x = d < 0 ? mid - w : mid; return `<text x="8" y="${y + 17}" style="fill:var(--ink);font-size:12.5px">${n}</text><rect x="${x.toFixed(1)}" y="${y}" width="${w.toFixed(1)}" height="26" rx="5" fill="${d < 0 ? 'var(--bad)' : 'var(--ok)'}" opacity=".8"/><text x="${d < 0 ? (x - 6).toFixed(1) : (x + w + 6).toFixed(1)}" y="${y + 17}" text-anchor="${d < 0 ? 'end' : 'start'}" style="fill:var(--ink)">${d < 0 ? '−' : '+'}¥${fmt(Math.abs(d))}</text>`; }).join('');
+  const T = {
+    pi: () => `<div class="grid g4"><div class="card kpi"><div class="k">预估利润</div><div class="v">¥${fmt(est)}</div></div><div class="card kpi"><div class="k">实际利润</div><div class="v">¥${fmt(act)}</div><div class="d dn">少 ¥${fmt(est - act)}</div></div><div class="card kpi"><div class="k">预估毛利率</div><div class="v">${fmt(est / rows[0][1] * 100, 1)}%</div></div><div class="card kpi"><div class="k">实际毛利率</div><div class="v">${fmt(act / rows[0][2] * 100, 1)}%</div></div></div>
+      <div class="grid g2 mt"><div><h3>${c.pi} 差异拆解 <small>实际减预估</small></h3><svg class="chart" viewBox="0 0 ${W} ${14 + diffs.length * 40}" role="img" aria-label="利润差异：汇差少 203 元，生产成本多 760 元，运费多 128 元" style="width:100%;height:auto"><line x1="${mid}" x2="${mid}" y1="6" y2="${10 + diffs.length * 40}" stroke="var(--line)"/>${bars}</svg></div>
+      <div><h3>各合同利润</h3>${table(['PI', '客户', '预估', '实际'], DB.contracts.map(x => [piBtn(x.pi), custOf(x.cust).short, '¥' + fmt(x.est), x.act == null ? pill('进行中', 'run') : '¥' + fmt(x.act)]), { num: [2, 3] })}</div></div>`,
+    month: () => table(['产品', '期初数量', '期初金额 ¥', '本期入库', '入库金额 ¥', '加权平均单价 ¥'], [['C91QS100LR4-A2', 36, 18446, 90, 46116, 512.40], ['C91SP25SR-B1', 60, 3168, 3000, 158400, 52.80], ['C91SP10LR-D1', 820, 33784, 0, 0, 41.20]].map(r => [mono(r[0]), fmt(r[1]), fmt(r[2]), fmt(r[3]), fmt(r[4]), fmt(r[5], 2)]), { num: [1, 2, 3, 4, 5] }) + `<div class="toolbar" style="margin-top:12px"><button class="btn pri" type="button" data-act="toast" data-msg="已完成 11 月成本计算，销售成本已回写（演示）">执行本月成本计算</button></div><p class="note">月加权平均：材料、人工、制造费用、委外加工费分摊到完工产品，再回写销售成本。</p>`,
+    wo: () => table(['工单', '产品', '数量', '材料 ¥', '委外加工 ¥', '人工制费 ¥', '单位成本 ¥'], [['WO2026110201', 'C91SP25SR-B1', 3000, 141000, 0, 17400, 52.80], ['WO2026111601', 'C91QS100LR4-A2', 90, 39780, 324, 6012, 512.40]].map(r => [mono(r[0]), mono(r[1]), fmt(r[2]), fmt(r[3]), fmt(r[4]), fmt(r[5]), fmt(r[6], 2)]), { num: [2, 3, 4, 5, 6] }) + `<p class="note">人工与制造费用按部门工时分摊，分摊比例在总账基础设置维护。</p>`
+  };
+  return head('成本与利润', '月加权平均成本、工单与委外成本、每张 PI 的实际利润') + `<div class="card"><div class="tabs" role="tablist">${tabs.map(([k, n]) => `<button type="button" role="tab" aria-selected="${S.costTab === k}" data-act="costTab" data-id="${k}">${n}</button>`).join('')}</div>${T[S.costTab]()}</div>`;
+};
+
+V.gl = () => {
+  const tabs = [['vou', '自动凭证'], ['rules', '分录规则'], ['rep', '报表'], ['close', '月末关账']];
+  const pend = DB.vouchers.filter(v => v.st === '待审核').length;
+  const checks = [['未审核单据', `${pend + pendingAp()} 张`, pend + pendingAp() === 0], ['待检验收货', `${DB.inbound.filter(x => x.st === '待检验').length} 笔`, DB.inbound.every(x => x.st !== '待检验')], ['本月记账汇率已锁定', curLock()[0], true], ['成本计算', '未执行', false], ['月末调汇', '未执行', false], ['损益结转', '关账时自动执行', true]];
+  const T = {
+    vou: () => DB.vouchers.map(v => `<div class="card" style="margin-bottom:10px;background:var(--card2)"><h3>${mono(v.no)} <small>来源：${v.src}</small>${v.st === '待审核' ? pill('待审核', 'warn') : pill('已过账', 'ok')}</h3>${table(['科目', '借方 ¥', '贷方 ¥'], v.lines.map(l => [l[0], l[1] ? fmt(l[1], 2) : '', l[2] ? fmt(l[2], 2) : '']), { num: [1, 2] })}${v.st === '待审核' ? `<div class="toolbar" style="margin-top:10px"><button class="btn sm pri" type="button" data-act="postV" data-id="${v.no}">审核过账</button></div>` : ''}</div>`).join('') + '<p class="note">单据审核后自动产生凭证，会计只需审核；也可以按月导出给其他会计软件或会计师。</p>',
+    rules: () => table(['单据', '借方', '贷方'], DB.rules.map(r => [r[0], r[1], r[2]])) + '<p class="note">分录规则可依贵司科目表调整；外币科目按币别分户（美元户、人民币户）。</p>',
+    rep: () => `<div class="grid g2"><div>${table(['利润表（11 月 1–18 日）', '金额 ¥'], [['营业收入', '1,642,380.00'], ['  其中：出口收入', '1,446,380.00'], ['  内销收入', '196,000.00'], ['营业成本', '−1,371,260.00'], ['销售费用（运费、佣金）', '−38,410.00'], ['财务费用-汇兑损益', '−203.36'], ['<b>营业利润</b>', '<b>232,506.64</b>']], { num: [1] })}</div><div>${table(['科目余额（节选）', '期末余额 ¥'], [['银行存款-美元户', '86,361.29'], ['应收账款', '763,214.40'], ['库存商品', '312,580.00'], ['原材料', '96,742.00'], ['应付账款', '−112,402.00']], { num: [1] })}</div></div><p class="note">资产负债表、现金流量表、明细账与往来账也都可以查询与导出。</p>`,
+    close: () => table(['检查项', '状态', '结果'], checks.map(c => [c[0], c[1], c[2] ? pill('通过', 'ok') : pill('待处理', 'warn')])) + `<div class="toolbar" style="margin-top:12px"><button class="btn pri" type="button" data-act="closeMonth" ${checks.every(c => c[2]) ? '' : 'disabled'}>关账 11 月</button><span class="note" style="margin:0">全部通过才能关账；关账后该月单据不能再修改，需要时可由财务主管反关账。</span></div>`
+  };
+  return head('总账与关账', '凭证由单据自动产生，关账前自动检查；若正式账在其他软件，可只用导出') + `<div class="card"><div class="tabs" role="tablist">${tabs.map(([k, n]) => `<button type="button" role="tab" aria-selected="${S.glTab === k}" data-act="glTab" data-id="${k}">${n}</button>`).join('')}</div>${T[S.glTab]()}</div>`;
+};
+
+/* ================= 设置 ================= */
+V.apprset = () => {
+  const docs = [['报价单', '毛利低于 12%', '业务主管', '总经理（毛利低于 8%）'], ['合同（PI）', '超过信用额度或金额 > USD 100,000', '业务主管', '总经理'], ['订单变更', '任何变更', '业务主管', '—'], ['采购单', '金额 > ¥30,000', '采购主管', '总经理（> ¥200,000）'], ['付款', '金额 > ¥30,000', '财务主管', '总经理'], ['收款认领', '付款人与买方不一致', '财务主管', '—'], ['超领', '超过 BOM 用量', '生产主管', '—'], ['样品借出', '单次价值 > USD 500', '业务主管', '—']];
+  const P = ['业务主管', '采购主管', '生产主管', '财务主管', '总经理'];
+  return head('审批设置', '每种单据各自设定：什么情况要审批、谁审、批完通知谁') + `
+  <div class="banner own"><b>默认两段</b><span>“送审＋审核”两段，需要时可加到第 3～6 层，或设金额门槛与会签。</span></div>
+  <div class="tbl"><table><thead><tr><th>单据</th><th>触发条件</th><th>第 1 层</th><th>第 2 层</th><th></th></tr></thead><tbody>${docs.map((d, i) => `<tr><td><b>${d[0]}</b></td><td class="wrap">${d[1]}</td><td><select id="ap1-${i}" aria-label="第 1 层审批人">${P.map(o => `<option ${o === d[2] ? 'selected' : ''}>${o}</option>`).join('')}</select></td><td class="wrap">${d[3] === '—' ? '<span class="note" style="margin:0">不需要</span>' : d[3]}</td><td><button class="btn sm" type="button" data-act="toast" data-msg="已为「${d[0]}」新增一层审批（演示）">${ic('plus')}加一层</button></td></tr>`).join('')}</tbody></table></div>
+  <div class="toolbar mt"><button class="btn pri" type="button" data-act="toast" data-msg="审批设置已保存（演示）">保存设置</button></div>`;
+};
+
+V.category = () => {
+  const opt = { 业务类型: ['外销', '内销'], 用途: ['量产', '样品', '验证', '需求预测'], 产品线: ['光模块', '芯片'] };
+  const map = [['外贸', '业务类型', '外销'], ['国外', '业务类型', '外销'], ['内贸', '业务类型', '内销'], ['国内', '业务类型', '内销'], ['样品', '用途', '样品'], ['验证', '用途', '验证'], ['需求', '用途', '需求预测'], ['芯片', '产品线', '芯片'], ['22', '项目号', ''], ['365', '项目号', ''], ['647', '项目号', '']];
+  return head('业务分类', '易助“性质类型”一个下拉混了内外销、用途、产品线和项目号，迁移时拆成四个字段') + `
+  <div class="grid g2">
+    <div class="card"><h3>旧值怎么对应</h3><div style="display:grid;gap:8px">${map.map(([o, f, v], i) => `<div class="map"><span class="old">${o}</span><span class="arr">→</span><span class="toolbar" style="flex-wrap:nowrap"><span class="tag own">${f}</span>${f === '项目号' ? pill('请贵司确认含义', 'warn') : `<select id="cat-${i}" aria-label="${o} 对应值" style="width:auto">${opt[f].map(x => `<option ${x === v ? 'selected' : ''}>${x}</option>`).join('')}</select>`}</span></div>`).join('')}</div></div>
+    <div class="card"><h3>拆分后的四个字段</h3>${table(['字段', '可选值', '用在哪里'], [['业务类型', '外销、内销', '流程节点、单证、开票'], ['用途', '量产、样品、验证、需求预测', '样品统计、利润分开看'], ['产品线', '光模块、芯片', '业绩与毛利按产品线'], ['项目号', '自由输入', '对应客户项目或专案']])}<p class="note">拆开后，报表能直接按“外销量产”“样品”分开统计。</p></div>
+  </div>`;
+};
+
+V.perm = () => {
+  const roles = [['业务员', '自己的客户与合同', '可看', '隐藏', '隐藏'], ['业务主管', '本部门', '可看', '可看', '可看'], ['采购', '采购与供应商', '隐藏', '可看', '隐藏'], ['仓库', '库存与收货', '隐藏', '隐藏', '隐藏'], ['生产', '工单与委外', '隐藏', '可看', '隐藏'], ['财务', '全部', '可看', '可看', '可看'], ['总经理', '全部', '可看', '可看', '可看']];
+  const cell = v => v === '可看' ? pill('可看', 'ok') : pill('隐藏', 'mute');
+  return head('权限与日志', '按角色决定看得到哪些资料、哪些字段；重要操作留日志') + `
+  <div class="banner ok"><b>新账号默认看不到任何客户</b><span>先指定角色与负责范围才开放。</span></div>` +
+  table(['角色', '数据范围', '售价', '成本与采购价', '利润'], roles.map(r => [`<b>${r[0]}</b>`, r[1], cell(r[2]), cell(r[3]), cell(r[4])])) + `
+  <div class="card mt"><h3>操作日志</h3>${table(['时间', '人员', '操作', '单据'], [['11-18 10:32', '王总', '核准信用额度', 'PI20261009MNO'], ['11-18 09:15', '赵敏', '审核凭证', '记-1117-012'], ['11-17 16:40', '林晓', '提交订单变更', 'BG-0012']])}</div>`;
+};
+
+V.country = () => head('国家配置', '开拓新国家只改配置，不改程序') +
+  table(['国家', '语言', '币种', '日期格式', '产地证', '合规要点'], [['越南', '英文、越南文', 'USD', 'DD/MM/YYYY', 'Form E', '越文标签'], ['泰国', '英文', 'USD', 'DD/MM/YYYY', 'RCEP / Form E', '—'], ['菲律宾', '英文', 'USD', 'MM/DD/YYYY', 'Form E', '—'], ['印尼', '英文、印尼文', 'USD', 'DD/MM/YYYY', 'Form E', 'SDPPI 认证'], ['墨西哥', '英文、西班牙文', 'USD', 'DD/MM/YYYY', '原产地声明', '进口商 RFC'], ['德国', '英文、德文', 'USD／EUR', 'DD.MM.YYYY', '—', 'CE、RoHS 声明']]) +
+  `<p class="note">单证与打印模板、表尾签核栏、假日表也在这里按国家与单据设定。</p>`;
+
+V.migrate = () => {
+  const steps = [['主档', '客户、供应商、商品、BOM、仓库、科目', '从易助导出后导入', '完成', 'ok'], ['期初库存', '各仓库存数量、批号、单位成本', '以切换日盘点数为准', '待盘点', 'warn'], ['未结单据', '进行中订单、未完工单、未到货采购单', '逐张转入，保留原单号对照', '进行中', 'run'], ['未结应收应付', '未收发票、未付发票、预收预付', '按发票逐张导入', '待开始', 'mute'], ['历史报价附件', '易助报价单的 Excel 附件', '导入附件清单，按客户与产品可查', '待开始', 'mute'], ['平行运行', '新旧系统同时跑一个月', '每周对账库存与应收', '待开始', 'mute']];
+  return head('上线迁移', '从易助切换到本系统的步骤；切换后易助保留为只读，查询历史资料') + `
+  <div class="card">${stepper(steps.map(s => s[0]), 1)}</div>
+  <div class="mt">${table(['步骤', '内容', '做法', '状态'], steps.map(s => [`<b>${s[0]}</b>`, `<span class="wrap">${s[1]}</span>`, `<span class="wrap">${s[2]}</span>`, pill(s[3], s[4])]))}</div>
+  <p class="note">建议在月初切换，期初数用上月关账结果；切换前一周冻结主档修改。</p>`;
+};
+
+V.window = () => head('国际贸易单一窗口', '先做“导出符合格式的资料”，再评估直接对接') + `
+  <div class="card">${table(['资料', '格式', '状态'], [['报关单草稿', '单一窗口导入格式', pill('可用', 'ok')], ['原产地证申请', 'Form E / RCEP', pill('可用', 'ok')], ['商业发票与装箱单', 'PDF、Excel', pill('可用', 'ok')]])}<div class="toolbar" style="margin-top:12px"><button class="btn pri" type="button" data-act="toast" data-msg="已导出 SH-2611-03 报关资料（演示）">导出 SH-2611-03</button></div></div>`;
+
+V.portal = () => head('客户门户', '客户与外协厂用链接登录，只看自己的单') + `
+  <div class="grid g2">
+    <div class="card"><h3>客户看到的画面</h3><div class="phone"><div class="pc"><h5>Kepler Telecom · Orders</h5>${[['PI20261103KEP', 'In production 45%', 'ETD 11-28'], ['PI20260912KEP', 'Delivered', 'Invoice due']].map(r => `<div style="border-top:1px solid var(--line);padding-top:8px;margin-top:8px"><b class="m">${r[0]}</b><br><span style="color:var(--muted)">${r[1]} · ${r[2]}</span></div>`).join('')}<div class="toolbar" style="margin-top:10px"><span class="btn sm">Download PI</span><span class="btn sm">Packing list</span></div></div></div></div>
+    <div class="card"><h3>外协厂看到的画面</h3>${table(['委外单', '主件', '数量', '已回货', '预计回货'], DB.wws.map(w => [mono(w.id), w.item, w.qty, w.back, w.due]), { num: [2, 3] })}<p class="note">外协厂可上传回货照片与检验报告。</p></div>
+  </div>`;
+</script>
+<script>
+/* ================= 外框 ================= */
+function side() {
+  const badge = { approvals: pendingAp(), ar: DB.receipts.filter(r => !r.claimed).length, inbound: DB.inbound.filter(x => x.st === '待检验').length, mrp: DB.mrp.filter(m => shortage(m) > 0 && !m.pr).length, ap: DB.ap.filter(x => x.st === '待核对').length };
+  const hot = ['approvals', 'mrp'];
+  const cur = S.view === 'contract' ? 'contracts' : S.view;
+  $('side').innerHTML = `<div class="brand"><span class="mk">光</span><div><b>光数外贸</b><small>一体化版 · 示例数据</small></div></div>` +
+    NAV.map(([g, items]) => `<div class="grp">${g}</div>` + items.map(([k, n]) => `<button type="button" class="nav" data-go="${k}" ${cur === k ? 'aria-current="page"' : ''}>${ic(k)}<span>${n}</span>${badge[k] ? `<span class="ct ${hot.includes(k) ? 'hot' : ''}">${badge[k]}</span>` : ''}</button>`).join('')).join('') +
+    `<div class="foot">一体化版：易助的功能全部在本系统内完成。<br>所有客户、金额、人名均为虚构示例。</div>`;
+}
+function topbar() {
+  const t = TITLE[S.view] || ['', ''], sk = document.documentElement.dataset.skin;
+  $('top').innerHTML = `<button class="menu" type="button" data-act="menu" aria-label="打开导航">${ic('menu')}</button>
+    <div class="crumb">${t[0]} <span>›</span> <b>${S.view === 'contract' ? (S.arg || '合同明细') : t[1]}</b></div>
+    <div class="search">${ic('search')}<input id="q" type="search" placeholder="搜索 PI、工单、采购单、客户、供应商" autocomplete="off" aria-label="搜索"><div class="results" id="results" hidden></div></div>
+    <div class="skin" role="group" aria-label="外观"><button type="button" data-act="skin" data-id="light" aria-pressed="${sk !== 'dark'}">${ic('sun')}<span>浅色</span></button><button type="button" data-act="skin" data-id="dark" aria-pressed="${sk === 'dark'}">${ic('moon')}<span>深色</span></button></div>
+    <span class="who" title="林晓 · 业务">林</span>`;
+}
+function drawer() { $('layer').innerHTML = S.drawer ? `<div class="layer" data-act="close"></div><aside class="drawer" role="dialog" aria-modal="true" aria-label="客户中心">${custDrawer(S.drawer)}</aside>` : ''; }
+function render() { side(); topbar(); $('main').innerHTML = `<div class="view">${V[S.view]()}</div>`; drawer(); }
+function go(spec) {
+  const [v, a, t] = String(spec).split('|');
+  if (v === 'customers' && a) { S.view = 'customers'; S.drawer = a; render(); return; }
+  S.arg = null;
+  if (v === 'contracts' && a) S.scF = a;
+  else if (v === 'ship' && a) S.shipSel = a;
+  else if (v === 'ar' && a) { if (['claim', 'inv', 'aging'].includes(a)) S.arTab = a; else { S.recSel = a; S.arTab = 'claim'; } }
+  else if (v === 'contract') { S.arg = a || null; S.tab = t || 'lines'; }
+  S.view = V[v] ? v : 'dash';
+  S.drawer = null; $('side').classList.remove('open');
+  render(); window.scrollTo(0, 0);
+  try { if (location.hash !== '#' + S.view) history.replaceState(null, '', '#' + S.view); } catch (_) {}
+}
+
+/* ================= 外观 ================= */
+let skinSaved = null;
+try { skinSaved = localStorage.getItem('erp5-skin'); } catch (_) {}
+function systemSkin() { const t = document.documentElement.dataset.theme; if (t === 'dark' || t === 'light') return t; return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
+function applySkin(s) { document.documentElement.dataset.skin = s; }
+applySkin(skinSaved || systemSkin());
+try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (!skinSaved) { applySkin(systemSkin()); topbar(); } }); } catch (_) {}
+try { new MutationObserver(() => { if (!skinSaved) { const s = systemSkin(); if (document.documentElement.dataset.skin !== s) { applySkin(s); topbar(); } } }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] }); } catch (_) {}
+
+function save() { try { localStorage.setItem('erp5a-req', JSON.stringify(S.choice)); localStorage.setItem('erp5a-note', JSON.stringify(S.note)); } catch (_) {} }
+function exportText() {
+  const lines = ['【外贸 ERP 需求确认结果 · 一体化版】'];
+  REQ.forEach(([g, , items]) => { lines.push('', `■ ${g}`); items.forEach(([id, name]) => { lines.push(`- ${name}：${CH[S.choice[id]] || '未选'}`); if (S.note[id]) lines.push(`  意见：${S.note[id]}`); }); });
+  if (S.note._all) lines.push('', '■ 其他意见', S.note._all);
+  return lines.join('\n');
+}
+let tt;
+function toast(msg) { const t = $('toast'); t.textContent = msg; t.hidden = false; t.style.animation = 'none'; void t.offsetWidth; t.style.animation = ''; clearTimeout(tt); tt = setTimeout(() => { t.hidden = true; }, 3000); }
+function keep(fn) { const y = window.scrollY; fn(); window.scrollTo(0, y); }
+let seq = 11;   // 示例资料已用到 01–09，新单号从 11 开始
+const nid = p => p + '20261118' + String(seq++).padStart(2, '0');
+const addStock = (item, qty, wh) => { const r = DB.stock.find(x => x[0] === item); if (r) r[2] += qty; else DB.stock.push([item, wh, qty, 0, (DB.mats[item] || [0, 0, 0])[2]]); };
+const voucher = (src, lines) => DB.vouchers.unshift({ no: '记-1118-0' + (10 + seq++), src, lines, st: '待审核' });
+
+/* ================= 操作 ================= */
+const ACT = {
+  toast: el => toast(el.dataset.msg),
+  menu: () => $('side').classList.toggle('open'),
+  skin: el => { skinSaved = el.dataset.id; try { localStorage.setItem('erp5-skin', skinSaved); } catch (_) {} applySkin(skinSaved); topbar(); },
+  close: () => { S.drawer = null; drawer(); },
+  openCust: el => { S.drawer = el.dataset.id; drawer(); },
+  claimCust: el => { const c = custOf(el.dataset.id); c.pool = '私海'; c.sales = '林晓'; keep(render); toast(`已领取 ${c.short}，归属林晓`); },
+  custF: el => { S.custF = el.dataset.id; keep(render); }, scF: el => { S.scF = el.dataset.id; keep(render); }, sampleF: el => { S.sampleF = el.dataset.id; keep(render); },
+  mapF: el => { S.mapF = el.dataset.id; keep(render); }, tab: el => { S.tab = el.dataset.id; keep(render); },
+  stockTab: el => { S.stockTab = el.dataset.id; keep(render); }, moveF: el => { S.moveF = el.dataset.id; keep(render); },
+  arTab: el => { S.arTab = el.dataset.id; keep(render); }, apTab: el => { S.apTab = el.dataset.id; keep(render); },
+  costTab: el => { S.costTab = el.dataset.id; keep(render); }, glTab: el => { S.glTab = el.dataset.id; keep(render); },
+  shipSel: el => { S.shipSel = el.dataset.id; keep(render); }, recSel: el => { S.recSel = el.dataset.id; keep(render); },
+  perfRule: el => { S.perfRule = el.dataset.id; keep(render); }, perfCash: () => { S.perfCash = !S.perfCash; keep(render); },
+  apply: () => { ALL.forEach(r => { S.choice[r[0]] = r[2] === 'r2' || r[2] === 'ro' ? 'later' : 'yes'; }); save(); keep(render); toast('已按建议选好，可以再逐项调整'); },
+  reset: () => { S.choice = {}; save(); keep(render); toast('已清空选择'); },
+  copy: () => { const t = $('exportText'); try { navigator.clipboard.writeText(t.value).then(() => toast('已复制，可以贴到微信或邮件'), () => { t.select(); toast('请按 Ctrl+C 复制已选中的文字'); }); } catch (_) { t.select(); toast('请按 Ctrl+C 复制已选中的文字'); } },
+  approve: el => {
+    const a = DB.approvals.find(x => x.id === el.dataset.id); a.status = '已核准';
+    if (a.ref === 'PI20261009MNO') { const c = scOf(a.ref); delete c.block; c.node = 2; const id = nid('WO'); c.wo = [id]; DB.wos.unshift({ id, pi: c.pi, item: 'C91GPON-CP', qty: 1200, done: 0, issued: false, due: '12-05', st: '待领料' }); toast(`已核准，自动产生工单 ${id}，物料需求已重算`); }
+    else if (a.ref === 'BG-0013') { const ch = DB.changes.find(x => x.id === 'BG-0013'); ch.st = '已生效'; scOf(ch.pi).ver = 2; toast('已核准，包装组已收到中性包装通知'); }
+    else if (a.ref === 'BJ2026111702') { DB.quotes.find(q => q.id === a.ref).status = '已批准'; toast('已核准，报价可以转 PI'); }
+    else if (DB.ap.find(x => x.id === a.ref)) { const x = DB.ap.find(i => i.id === a.ref); x.paid = x.amt; x.st = '已付款'; voucher(`付款 ${x.id}`, [['应付账款-' + supOf(x.sup).name, x.amt, 0], ['银行存款-人民币户', 0, x.amt]]); toast(`已核准，已付款并核销 ${x.id}`); }
+    else { const p = DB.pos.find(x => x.id === a.ref); if (p) { p.st = '已发出'; const m = DB.mrp.find(x => x.item === p.lines[0][0]); if (m) m.onway += p.lines[0][1]; toast(`${p.id} 已核准并发给${supOf(p.sup).name}，在途数量已更新`); } else toast('已核准'); }
+    keep(render);
+  },
+  reject: el => { const a = DB.approvals.find(x => x.id === el.dataset.id); a.status = '已退回'; keep(render); toast(`已退回给 ${a.who}`); },
+  saveQuote: () => {
+    const q = S.q, id = nid('BJ'), low = S.calc.rate < 12;
+    DB.quotes.unshift({ id, ver: 1, cust: q.cust, prod: q.prod, qty: q.qty, price: +S.calc.price.toFixed(2), margin: +S.calc.rate.toFixed(1), status: low ? '待审批' : '已发客户', att: 0, sales: '林晓' });
+    if (low) DB.approvals.unshift({ id: 'AP-4' + (20 + seq), type: '报价毛利低于门槛', ref: id, who: '林晓', detail: `毛利 ${fmt(S.calc.rate, 1)}%，门槛 12%`, status: '待审批', step: '第 1 层 · 业务主管', go: 'quote' });
+    keep(render); toast(low ? `${id} 已保存并送业务主管审批` : `${id} 已保存`);
+  },
+  toContract: el => {
+    const q = DB.quotes.find(x => x.id === el.dataset.id), cu = custOf(q.cust), pi = 'PI20261118' + cu.short.replace(/[^A-Za-z]/g, '').slice(0, 3).toUpperCase();
+    q.status = '已转合同'; q.pi = pi;
+    DB.contracts.unshift({ pi, cust: q.cust, type: '外销', term: 'FOB 深圳', cur: 'USD', sales: q.sales, lines: [[q.prod, q.qty, q.price]], node: 1, ver: 1, pay: [['订金 30%', +(q.qty * q.price * .3).toFixed(2), '11-25', '未收'], ['出货前 70%', +(q.qty * q.price * .7).toFixed(2), '12-20', '未收']], wo: [], po: [], ship: '', inv: '', est: Math.round(q.qty * q.price * curLock()[1] * q.margin / 100), act: null, co: '—', late: 0, use: '量产' });
+    go('contract|' + pi); toast(`已生成 ${pi}；确认后自动产生工单建议与物料需求`);
+  },
+  advance: el => {
+    const c = scOf(el.dataset.id), n = NODES[c.type];
+    c.node = Math.min(c.node + 1, n.length - 1); c.late = 0;
+    let extra = '';
+    if (c.node === 2 && !c.wo.length) { const id = nid('WO'); c.wo = [id]; DB.wos.unshift({ id, pi: c.pi, item: c.lines[0][0], qty: c.lines[0][1], done: 0, issued: false, due: '12-10', st: '待领料' }); extra = `，已产生工单 ${id}`; }
+    keep(render); toast(`${c.pi} 进入「${n[c.node]}」${extra}`);
+  },
+  sampleWin: el => { const s = DB.samples.find(x => x.id === el.dataset.id); s.st = '已转订单'; s.note = '测试通过，已建立报价'; S.q.cust = s.cust; S.q.prod = s.prod; S.q.cost = prodOf(s.prod).cost; go('quote'); toast(`${custOf(s.cust).short} 测试通过，已带入报价`); },
+  sampleOut: el => { const s = DB.samples.find(x => x.id === el.dataset.id); s.st = '测试中'; addStock(s.prod, -s.qty, '成品仓'); DB.moves.unshift(['11-18', '样品借出', s.id, s.prod, -s.qty, '成品仓']); keep(render); toast(`${s.id} 已出库，成品库存已扣减`); },
+  genDocs: el => {
+    const s = DB.ships.find(x => x.id === el.dataset.id); Object.keys(s.docs).forEach(k => { s.docs[k] = 1; });
+    const c = scOf(s.items[0][0]); let msg = `${s.id} 单证已生成`;
+    if (c && !c.inv) { c.inv = nid('INV'); const got = c.pay.filter(p => p[3] === '已收').reduce((a, p) => a + p[1], 0); DB.ar.unshift({ inv: c.inv, pi: c.pi, cust: c.cust, cur: c.cur, amt: total(c), got, due: '12-05', log: [] }); c.node = Math.max(c.node, 6); voucher(`销售发票 ${c.inv}`, [['应收账款-' + custOf(c.cust).short, total(c) * curLock()[1], 0], ['主营业务收入-出口收入', 0, total(c) * curLock()[1]]]); msg += `，已自动开发票 ${c.inv} 并入应收`; }
+    keep(render); toast(msg);
+  },
+  afterNext: el => { const a = DB.after.find(x => x.id === el.dataset.id); a.step = Math.min(a.step + 1, a.steps.length - 1); keep(render); toast(`${a.id} 进入「${a.steps[a.step]}」`); },
+  claim: el => {
+    const [pi, i] = el.dataset.id.split('|'), c = scOf(pi), r = DB.receipts.find(x => x.id === S.recSel), ack = $('ackPayer');
+    if (ack && !ack.checked) { toast('请先确认已取得客户付款委托书'); ack.focus(); return; }
+    c.pay[+i][3] = '已收'; r.claimed = `${pi} · ${c.pay[+i][0]}`; r.rate = curLock()[1];
+    const inv = DB.ar.find(x => x.pi === pi); if (inv) inv.got = Math.min(inv.amt, inv.got + r.amt);
+    DB.fx.unsettled += r.amt;
+    voucher(`收款 ${r.id}`, [['银行存款-美元户', r.amt * r.rate, 0], [(inv ? '应收账款-' : '预收账款-') + custOf(c.cust).short, 0, r.amt * r.rate]]);
+    keep(render); toast(`已认领并核销到 ${pi}，凭证已产生`);
+  },
+  dun: el => { const r = DB.ar.find(x => x.inv === el.dataset.id); r.log.unshift(['11-18', custOf(r.cust).ch, '已提醒付款，等待客户回复']); keep(render); toast(`已记录 ${r.inv} 的跟催`); },
+  settle: () => {
+    const a = Math.min(+$('fx-amt').value || 0, DB.fx.unsettled), rate = +$('fx-rate').value || 0;
+    if (!a || !rate) { toast('请填写结汇金额与汇率'); return; }
+    DB.fx.hist.unshift(['11-18', a, rate, '本次结汇']); DB.fx.unsettled -= a;
+    const diff = a * (rate - curLock()[1]);
+    voucher('结汇', [['银行存款-人民币户', a * rate, 0], ['银行存款-美元户', 0, a * curLock()[1]], ['财务费用-汇兑损益', diff < 0 ? -diff : 0, diff > 0 ? diff : 0]]);
+    keep(render); toast(`已登记结汇 USD ${fmt(a)}，汇差 ${diff >= 0 ? '+' : '−'}¥${fmt(Math.abs(diff), 2)}，凭证已产生`);
+  },
+  makePR: el => {
+    const m = DB.mrp.find(x => x.item === el.dataset.id), mat = DB.mats[m.item], id = nid('QG');
+    m.pr = id; const alt = DB.suppliers.find(s => s.id !== mat[1] && s.cat.includes(mat[0].includes('TOSA') || mat[0].includes('ROSA') ? '器件' : '外壳')) || supOf('S-01');
+    DB.prs.unshift({ id, item: m.item, qty: shortage(m), need: '11-25', src: m.for, st: '比价中', offers: [[mat[1], mat[2], 10], [alt.id, +(mat[2] * 1.04).toFixed(2), 7]] });
+    keep(render); toast(`已产生请购单 ${id}，请比价选定供应商`);
+  },
+  pickOffer: el => {
+    const [prId, sup] = el.dataset.id.split('|'), p = DB.prs.find(x => x.id === prId), o = p.offers.find(x => x[0] === sup), id = nid('PO'), amt = o[1] * p.qty;
+    p.st = '已转采购'; p.po = id;
+    const st = amt > 30000 ? '待审批' : '已发出';
+    DB.pos.unshift({ id, sup, lines: [[p.item, p.qty, o[1]]], due: '11-25', recv: 0, st, for: p.src });
+    if (st === '待审批') DB.approvals.unshift({ id: 'AP-4' + (20 + seq), type: '采购单', ref: id, who: '采购 · 吴佳', detail: `${supOf(sup).name} ${nameOf(p.item)} ${fmt(p.qty)} 只，¥${fmt(amt)}`, status: '待审批', step: '第 1 层 · 采购主管', go: 'po' });
+    else { const m = DB.mrp.find(x => x.item === p.item); if (m) m.onway += p.qty; }
+    keep(render); toast(st === '待审批' ? `已产生 ${id}，金额超过 ¥30,000，送采购主管审批` : `已产生 ${id} 并发给${supOf(sup).name}`);
+  },
+  qcPass: el => {
+    const x = DB.inbound.find(i => i.id === el.dataset.id); x.st = '已入库';
+    const isFG = !!DB.products.find(p => p.code === x.item), wh = isFG ? '成品仓' : x.src === '委外回货' ? '半成品仓' : '原材料仓';
+    addStock(x.item, x.qty, wh); DB.moves.unshift(['11-18', x.src === '采购到货' ? '采购入库' : x.src === '委外回货' ? '委外回货入库' : '完工入库', x.id, x.item, x.qty, wh]);
+    const m = DB.mrp.find(i => i.item === x.item); if (m) { m.stock += x.qty; m.onway = Math.max(0, m.onway - x.qty); }
+    if (x.src === '采购到货') { const p = DB.pos.find(i => i.id === x.ref); if (p && DB.inbound.filter(i => i.ref === p.id).every(i => i.st === '已入库')) p.st = '已入库'; voucher(`采购入库 ${x.id}`, [['原材料', x.qty * DB.mats[x.item][2] / 1.13, 0], ['应付暂估', 0, x.qty * DB.mats[x.item][2] / 1.13]]); }
+    if (x.src === '委外回货') { const w = DB.wws.find(i => i.id === x.ref); DB.ap.unshift({ id: nid('JX'), sup: w.sup, ref: `${w.id} · 回货 ${x.qty} 套`, amt: x.qty * w.price, tax: +(x.qty * w.price / 1.13 * .13).toFixed(2), match: '按回货数量', due: '12-18', paid: 0, st: '待付款' }); }
+    keep(render); toast(`${x.id} 合格，已入${wh}${x.src === '委外回货' ? '，加工费已转应付' : x.src === '采购到货' ? '，已产生应付暂估' : ''}`);
+  },
+  qcFail: el => { const x = DB.inbound.find(i => i.id === el.dataset.id); x.st = '验退'; keep(render); toast(`${x.id} 已验退，已通知供应商并扣除应付`); },
+  issue: el => { const w = DB.wos.find(x => x.id === el.dataset.id); w.issued = true; w.st = '生产中'; (DB.boms[w.item] || []).forEach(b => { addStock(b[0], -b[1] * w.qty, '原材料仓'); DB.moves.unshift(['11-18', '生产领料', 'LL' + w.id.slice(2), b[0], -b[1] * w.qty, '原材料仓']); }); keep(render); toast(`${w.id} 已按 BOM 领料，库存已扣减`); },
+  report: el => { const w = DB.wos.find(x => x.id === el.dataset.id), q = Math.min(50, w.qty - w.done); w.done += q; if (w.done >= w.qty) w.st = '已完工'; DB.inbound.unshift({ id: nid('WG'), src: '工单完工', ref: w.id, who: '生产组', item: w.item, qty: q, st: '待检验' }); keep(render); toast(`${w.id} 报完工 ${q} 只，已送成品检验`); },
+  wwBack: el => { const w = DB.wws.find(x => x.id === el.dataset.id), q = w.qty - w.back; w.back = w.qty; DB.inbound.unshift({ id: nid('WS'), src: '委外回货', ref: w.id, who: supOf(w.sup).name, item: w.item, qty: q, st: '待检验' }); keep(render); toast(`已登记回货 ${q} 套，送检验`); },
+  apFix: el => { toast('已通知华晶光电重开发票，单价改为 238.00'); },
+  pay: el => { const x = DB.ap.find(i => i.id === el.dataset.id); if (x.amt > 30000) { x.st = '审批中'; DB.approvals.unshift({ id: 'AP-4' + (20 + seq++), type: '付款', ref: x.id, who: '财务 · 赵敏', detail: `${supOf(x.sup).name} ¥${fmt(x.amt, 2)}`, status: '待审批', step: '第 1 层 · 财务主管', go: 'ap' }); toast(`金额超过 ¥30,000，已送审批`); } else { x.paid = x.amt; voucher(`付款 ${x.id}`, [['应付账款-' + supOf(x.sup).name, x.amt, 0], ['银行存款-人民币户', 0, x.amt]]); toast(`已付款并核销 ${x.id}`); } keep(render); },
+  postV: el => { DB.vouchers.find(v => v.no === el.dataset.id).st = '已过账'; keep(render); toast('凭证已审核过账'); },
+  closeMonth: () => toast('11 月已关账（演示）')
+};
+
+/* ================= 搜索 ================= */
+function search(v) {
+  const box = $('results'); if (!box) return;
+  const k = v.trim().toLowerCase(); if (!k) { box.hidden = true; return; }
+  const idx = [
+    ...DB.contracts.map(c => [c.pi + ' ' + custOf(c.cust).name, c.pi, custOf(c.cust).short, 'contract|' + c.pi]),
+    ...DB.customers.map(c => [c.name + ' ' + c.short, c.name, c.country, 'customers|' + c.id]),
+    ...DB.quotes.map(q => [q.id + ' ' + custOf(q.cust).name, q.id, '报价单', 'quote']),
+    ...DB.wos.map(w => [w.id + ' ' + w.pi, w.id, '工单', 'mo']),
+    ...DB.pos.map(p => [p.id + ' ' + supOf(p.sup).name, p.id, '采购单', 'po']),
+    ...DB.suppliers.map(s => [s.name + ' ' + s.cat, s.name, '供应商', 'suppliers']),
+    ...DB.samples.map(s => [s.id + ' ' + custOf(s.cust).name, s.id, '样品', 'samples']),
+    ...MAP.filter(m => m[2]).map(m => [m[1] + ' ' + m[0], m[1], '易助功能 → ' + (TITLE[m[2]] || ['', ''])[1], m[2]])
+  ];
+  const hits = idx.filter(x => x[0].toLowerCase().includes(k)).slice(0, 8);
+  box.innerHTML = hits.length ? hits.map(h => `<button type="button" data-go="${h[3]}"><span class="m">${esc(h[1])}</span><small>${esc(h[2])}</small></button>`).join('') : '<div class="note" style="margin:8px 10px">没有找到符合的结果</div>';
+  box.hidden = false;
+}
+
+/* ================= 事件 ================= */
+document.addEventListener('click', e => {
+  const g = e.target.closest('[data-go]'), a = e.target.closest('[data-act]'), r = e.target.closest('[data-req]');
+  if (r) { S.choice[r.dataset.req] = r.dataset.v; save(); keep(render); return; }
+  if (a && a.tagName !== 'INPUT' && ACT[a.dataset.act]) { e.preventDefault(); ACT[a.dataset.act](a); return; }
+  if (g) { e.preventDefault(); go(g.dataset.go); return; }
+  if (!e.target.closest('.search')) { const b = $('results'); if (b) b.hidden = true; }
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset.act && ACT[t.dataset.act]) { ACT[t.dataset.act](t); return; }
+  if (t.dataset.qs) { S.q[t.dataset.qs] = t.value; if (t.dataset.qs === 'prod') S.q.cost = prodOf(t.value).cost; keep(render); }
+});
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.dataset.note) { S.note[t.dataset.note] = t.value; save(); const ex = $('exportText'); if (ex) ex.value = exportText(); }
+  if (t.dataset.q) { const v = parseFloat(t.value); if (!isNaN(v)) { S.q[t.dataset.q] = v; const id = t.id; keep(render); const n = $(id); if (n) n.focus(); } }
+  if (t.id === 'q') search(t.value);
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { if (S.drawer) ACT.close(); const b = $('results'); if (b) b.hidden = true; }
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); const q = $('q'); if (q) q.focus(); }
+});
+const start = (location.hash || '').replace('#', '');
+S.view = V[start] ? start : 'dash';
+render();
+</script>
+
+</html>
