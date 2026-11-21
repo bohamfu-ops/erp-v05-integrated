@@ -1,12 +1,16 @@
-﻿# 光数外贸 ERP 演示 - 一体化版
+# 光数外贸 ERP 演示 - 一体化版
 
 全部功能整合在同一系统内，不依赖外部系统对接。
+
+## 在线查看
+
+启用 GitHub Pages 后访问：https://bohamfu-ops.github.io/erp-v05-integrated/
 
 ## 文件说明
 
 - `index.html` - 完整演示（在线可直接打开）
 - `外贸ERP演示_v0.5_一体化版_单文件.html` - 单文件版，可离线直接双击打开
-- `1_shell.html` ~ `6_app.js` - 原始码分段，便于维护
+- `src/` - 原始码分段（1_shell.html ~ 6_app.js），便于维护
 
 ## 演示内容
 
